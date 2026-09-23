@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Electronics Virtual Trainer Kit | SRM DE Lab ECE 211 / CSE 207</title>
+  <meta name="description" content="Interactive Virtual Digital IC Trainer Kit replicating physical laboratory hardware for Experiments 1-5 from SRM Digital Electronics Lab manual.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="trainer-theme-light sidebar-collapsed">
+  <!-- Top App Navigation / Status Bar -->
+  <nav class="app-top-nav">
+    <div class="nav-brand-section">
+      <div class="lab-badge">SRM UNIVERSITY AP</div>
+      <h1 class="app-title">Digital Electronics Virtual Trainer Kit</h1>
+      <span class="course-code-pill">ECE 211 / CSE 207</span>
+    </div>
+
+    <!-- Quick Workbench Controls -->
+    <div class="nav-workbench-tools">
+      <div class="nav-btn-group">
+        <button class="nav-btn btn-secondary" id="btn-clear-wires" title="Remove all drawn patch cords">Clear Wires</button>
+        <button class="nav-btn btn-secondary" id="btn-reset-board" title="Reset entire trainer board">Reset Board</button>
+        <button class="nav-btn btn-info" id="btn-open-guide" title="How to use the Trainer Kit">Lab Guide</button>
+        <button class="nav-btn btn-toggle-sidebar" id="btn-toggle-manual" title="Toggle Observation Book Sidebar">Lab Manual</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main App Layout -->
+  <main class="app-layout-split" id="app-layout-split">
+    <!-- Left / Center: Interactive Hardware Trainer Kit Deck -->
+    <section class="trainer-board-viewport" id="trainer-board-container" aria-label="Digital Electronics Hardware Trainer Kit">
+      <!-- Injected by BoardView -->
+    </section>
+
+    <!-- Floating Toggle Tab to open sidebar when collapsed -->
+    <button class="floating-sidebar-tab" id="floating-sidebar-tab" title="Open Lab Manual & Observation Book">
+      <span class="tab-label">Lab Manual</span>
+    </button>
+
+    <!-- Right: SRM Lab Observation Book & Live Verification Panel -->
+    <aside class="manual-sidebar-panel" id="manual-panel-container" aria-label="Laboratory Observation Book and Live Truth Table">
+      <!-- Injected by ManualPanel -->
+    </aside>
+  </main>
+
+  <!-- MODAL: IC Component Picker -->
+  <div class="app-modal-backdrop" id="ic-picker-modal">
+    <div class="app-modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <h3>IC Component Inventory (Appendix-I)</h3>
+        </div>
+        <button class="btn-modal-close" id="btn-close-ic-picker" aria-label="Close dialog">&times;</button>
+      </div>
+      <div class="modal-body" id="ic-picker-grid">
+        <!-- Dynamically injected with 74xx chips -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Lab Instructor Verification Report -->
+  <div class="app-modal-backdrop" id="verification-modal">
+    <div class="app-modal-dialog modal-lg">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <h3>Lab Instructor Official Evaluation Report</h3>
+        </div>
+        <button class="btn-modal-close" id="btn-close-verification" aria-label="Close dialog">&times;</button>
+      </div>
+      <div class="modal-body" id="verification-modal-body">
+        <!-- Injected by verifier -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: How to Use / Lab Guide -->
+  <div class="app-modal-backdrop" id="lab-guide-modal">
+    <div class="app-modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <h3>Virtual Digital Electronics Lab Guide</h3>
+        </div>
+        <button class="btn-modal-close" id="btn-close-guide" aria-label="Close dialog">&times;</button>
+      </div>
+      <div class="modal-body guide-content">
+        <h4>1. Wiring Patch Cords</h4>
+        <p>&bull; <strong>Click/drag from any terminal</strong> (Switch, IC pin, LED, or Vcc/GND rail) towards another terminal. As you get close, the wire magnetically snaps to the target port!</p>
+        <p>&bull; <strong>Click-to-Connect:</strong> You can also simply click terminal A to start a cord, then click terminal B to complete it.</p>
+        
+        <h4>2. Powering Your ICs (SRM Lab Manual Rule 5)</h4>
+        <p>&bull; Every integrated circuit <strong>must have power connected</strong>: Pin 14 (or 16) wired to the <strong>+5V (Vcc) rail</strong>, and Pin 7 (or 8) wired to the <strong>GND rail</strong>.</p>
+
+        <h4>3. Interactive Switches & LEDs</h4>
+        <p>&bull; Click the rocker switches (SW0&ndash;SW7) on the left to toggle between Logic 1 (HIGH) and Logic 0 (LOW).</p>
+        <p>&bull; Output LEDs on the right illuminate bright red when driven HIGH (1) and stay dark when LOW (0).</p>
+
+        <h4>4. Verification & Reference Circuit</h4>
+        <p>&bull; Click <strong>Lab Manual</strong> on the top right to open the Observation Book sidebar.</p>
+        <p>&bull; Click <strong>Verify Circuit</strong> to have the virtual Lab Instructor check your wiring against all test vectors.</p>
+        <p>&bull; Click <strong>Load Reference Circuit</strong> to view and study the textbook wiring.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div class="toast-notification" id="app-toast"></div>
+
+  <!-- Scripts -->
+  <script src="js/ics/ic_definitions.js"></script>
+  <script src="js/engine/netlist.js"></script>
+  <script src="js/experiments/experiments.js"></script>
+  <script src="js/engine/verifier.js"></script>
+  <script src="js/ui/wires.js"></script>
+  <script src="js/ui/board.js"></script>
+  <script src="js/ui/manual_panel.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

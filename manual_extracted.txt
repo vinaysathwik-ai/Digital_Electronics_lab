@@ -1,0 +1,1033 @@
+=== PAGE 1 ===
+ 
+ 
+DIGITAL ELECTRONICS 
+OBSERVATION BOOK 
+ 
+ 
+ 
+ 
+ 
+School of Engineering and Sciences (SEAS) 
+ 
+Department of  
+Electronics and Communication Engineering 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Name:     
+Roll number:  Section:   
+Academic Year:   Semester:    
+
+=== PAGE 2 ===
+Department of Electronics and Communications Engineering       CSE 207 
+ 
+ 
+ 
+ 
+ 
+ 
+LIST OF EXPERIMENTS 
+ 
+Course 
+Name 
+Digital Electronics lab  
+Course Code         ECE 211 / CSE 207 
+S. No. Name of the Experiment Page No 
+1 Realization of Basic Logic Gates 3-6 
+2 Design of Code Converters: (Binary to Gray) and (Gray to 
+Binary) 
+7-8 
+3 Design of Combinational Logic Circuits: a) Half-Adder / Half-
+Subtractor b) Full-Adder /Full- Subtractor 9-11 
+4 Design of Multiplexers and De Multiplexer 12-14 
+5 Design of Decoder and Encoder 15-16 
+6 Design of a Magnitude Comparator 17 
+7 Design and Verification of Flip-Flops 18-20 
+8 Design of Johnson and Ring Counter 21-22 
+9 Design of a Synchronous Counter  23-24 
+10 Design of a Decade Counter Using IC-74LS90 25-26 
+11 
+Design of a Universal Shift Register  
+(Serial to Parallel, Parallel to Serial, Serial to Serial and Parallel 
+to Parallel Converters) 
+27-29 
+
+
+=== PAGE 3 ===
+Department of Electronics and Communications Engineering       CSE 207 
+ 
+DIGITAL ELECTRONICS 
+LABORATORY 
+ 
+DO’S AND DON’TS 
+ 
+DO’S: - 
+1. Students must carry observation notes and ensure that all records are  
+completed in all aspects. 
+2. The correct specifications of the equipment must be mentioned in the circuit 
+diagram. 
+3. Students should be familiar with the operation of all laboratory equipment. 
+4. Proper care must be taken while handling laboratory equipment and 
+instruments. 
+5. After completing the connections, students must get their circuits verified by 
+the Lab Instructor. 
+6. All readings and waveforms must be shown to the concerned faculty for 
+verification. 
+7. Before leaving the laboratory, students must ensure that all switches are in the 
+OFF position and disconnect all connections. 
+8. All patch cords and chairs must be properly placed in their respective 
+positions. 
+ 
+ 
+DON’TS: - 
+ 
+1. Arrive late to the laboratory. 
+2. Make or remove connections while the power is ON. 
+3. Switch ON the power supply without verification by the instructor. 
+4. Switch OFF the machine while it is under load. 
+5. Leave the laboratory without the permission of the concerned faculty. 
+
+=== PAGE 4 ===
+ 
+ Department of Electronics and Communications Engineering             CSE 207 
+Page No - 1 
+ 
+ 
+ 
+Appendix- I 
+IC PIN DIAGRAMS: 
+ 
+ 
+ 
+AND GATE (7408) OR GATE (7432) 
+ 
+ 
+ 
+NOT GATE (7404) Ex-OR GATE (7486) 
+ 
+ 
+ 
+NAND GATE (7400) NOR GATE (7402) 
+ 
+
+
+=== PAGE 5 ===
+ 
+ Department of Electronics and Communications Engineering             CSE 207 
+Page No - 2 
+ 
+ 
+ 
+EX NOR GATE (74266) 3 INPUT AND GATE (7411) 
+ 
+ 
+ 
+3 INPUT NAND GATE (7410) D FLIPFLOP (7474) 
+ 
+ 
+ 
+JK FLIP FLOP (7476) 
+ 
+
+
+=== PAGE 6 ===
+ 
+ Department of Electronics and Communications Engineering             CSE 207 
+Page No - 3 
+ 
+ 
+ 
+1. REALIZATION OF BASIC LOGIC GATES 
+ 
+AIM: To study logic gates and verify their truth tables. 
+ 
+     APPARATUS REQUIRED: 
+ 
+SL No. COMPONENT SPECIFICATION QTY 
+1. AND GATE IC 7408 1 
+2. OR GATE IC 7432 1 
+3. NOT GATE IC 7404 1 
+4. 
+NAND GATE 2 
+I/P IC 7400 1 
+5. NOR GATE IC 7402 1 
+6. X-OR GATE IC 7486 1 
+7. IC TRAINER KIT - 1 
+8. PATCH CORD - As per Required 
+ 
+ 
+THEORY: Circuit that takes the logical decision and the process are called logic gates. Each gate 
+has one or more input and only one output. OR, AND and NOT are basic gates. NAND, NOR 
+and X-OR are known as universal gates. Basic gates form these gates.  
+AND GATE: The AND gate performs a logical multiplication commonly known as AND 
+function. The output is high when both the inputs are high. The output is low level when any 
+one of the inputs is low. 
+ 
+OR GATE: The OR gate performs a logical addition commonly known as OR function. The 
+output is     
+high when any one of the inputs is high. The output is low level when both the inputs are low.  
+ 
+ NOT GATE: The NOT gate is called an inverter. The output is high when the input is low. The 
+output    
+ is low when the input is high. 
+ 
+NAND GATE: The NAND gate is a contraction of AND -NOT. The output is high when both 
+inputs are low and any one of the input is low .The output is low level when both inputs are 
+high. 
+ 
+NOR GATE: The NOR gate is a contraction of OR -NOT. The output is high when both inputs 
+are   low. The output is low when one or both inputs are high.  
+ 
+ X-OR GATE: The output is high when any one of the inputs is high. The output is low when 
+both the inputs are low and both the inputs are high.  
+ 
+ 
+ 
+ 
+ 
+
+=== PAGE 7 ===
+ 
+ Department of Electronics and Communications Engineering             CSE 207 
+Page No - 4 
+ 
+ 
+ PROCEDURE: 
+ 
+(i) Connections are given as per circuit diagram.  
+(ii) Logical inputs are given as per circuit diagram.  
+(iii)  Observe the output and verify the truth table.  
+  
+ 
+OR GATE: 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+=== PAGE 8 ===
+ 
+ Department of Electronics and Communications Engineering             CSE 207 
+Page No - 5 
+ 
+ 
+NOT GATE: 
+ 
+ 
+ 
+X-OR GATE: 
+SYMBOL: PIN DIAGRAM: 
+ 
+
+
+=== PAGE 9 ===
+ 
+ Department of Electronics and Communications Engineering             CSE 207 
+Page No - 6 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+CONCLUSION: 
+ 
+ 
+ 
+ 
+
+
+=== PAGE 10 ===
+ 
+ Department of Electronics and Communications Engineering             CSE 207 
+Page No - 7 
+ 
+ 
+ 
+2. DESIGN OF CODE CONVERTORS 
+(BINARY TO GRAY) & (GRAY TO BINARY) 
+ 
+AIM: To design code converters and verify their truth tables 
+ 
+APPARATUS: 
+ 
+1. IC - 7486 
+2. Electronic circuit designer  
+3. Connecting patch cords 
+ 
+CIRCUIT DIAGRAM:  
+ 
+BINARY TO GRAY: 
+ 
+ 
+GRAY TO BINARY:  
+
+
+=== PAGE 11 ===
+ 
+ Department of Electronics and Communications Engineering             CSE 207 
+Page No - 8 
+ 
+ 
+ 
+THEORY: 
+WHAT IS BINARY CODE: - 
+BINARY code is a way of representing the text or the data generated by the 
+computers and other  devices. In binary coding the text  or the data is represented in a 
+stream of bits of 1's and 0's. that is weighted as 8,4,2,1. so for forming 7, you just need 
+111. Similar computation for other decimal numbers. 
+WHAT ARE GRAY CODES: - 
+GRAY CODES are non -weighted codes, that is they can’t be provided a weight to 
+calculate their equivalent in decimal. Gray codes are often called reflected binary code; 
+the reason is clear if you  compare the column of gray code with the binar y code. gray 
+Code is a symbolic representation of  discrete information. Codes are of different types. 
+Gray Code is one of the most important codes. It  is a non-weighted code which belongs 
+to a class of codes called minimum change codes. In this  codes while traversing from 
+one step to another step only  one bit in the code group changes . In case of Gray Code 
+two adjacent code numbers differs from each other by only one bit. The idea of it can  
+be cleared from the table given below. 
+ 
+PROCEDURE: - 
+ 
+1. The circuit connections are made as shown in fig. 
+2. Pin (14) is connected to +Vcc and Pin (7) to ground. 
+3. In the case of binary to gray conversion, the inputs B0, B1, B2 and B3 are given at 
+respective pins and outputs G0, G1, G2, G3 are taken for all the 16 combinations of 
+the input. 
+4. In the case of gray to binary conversion, the inputs G0, G1, G2 and G3 are given 
+at respective    Pins and outputs B0, B1, B2, and B3 are taken for all the 16 
+combinations of inputs. 
+5. The values of the outputs are tabulated. 
+ 
+CONCLUSION: 
+ 
+ 
+ 
+  
+
+=== PAGE 12 ===
+ 
+ Department of Electronics and Communications Engineering             CSE 207 
+Page No - 9 
+ 
+ 
+3. DESIGN OF COMBINATIONAL LOGIC CIRCUITS 
+ 
+AIM:  To design and construct: a) Half-adder, Half- subtractor, 
+ 
+b) Full-adder, Full- subtractor. 
+ 
+APPARATUS:  
+ 
+1. IC - 7486, 7432, 7408, 7400 
+2. Electronic Circuit Designer 
+3. Connecting patch cords. 
+ 
+THEORY: 
+ 
+HALF ADDER: 
+A half adder has two inputs for the two bits to be  added and two  outputs one 
+from the sum ‘S’ and other from the carry ‘C’ into the higher adder position. Above 
+circuit is called as a carry signal  from the addition of the less significant bits sum from the 
+X-OR Gate the carry out from the AND gate. 
+FULL ADDER: 
+A full adder is a combinational circuit that forms the arithmetic sum of input; it 
+consists of three inputs and two outputs. A full adder is useful to add three bits at a time 
+but a half adder cannot do so. In full adder  sum output  will be  taken from X-OR Gate,  
+carry output will be taken from OR Gate. 
+HALF SUBTRACTOR: 
+The half subtractor is constructed using X-OR and AND Gate. The half subtractor 
+has two input and two outputs. The outputs are difference and borrow. The difference 
+can be applied using X -OR Gate, borrow output can  be implemented using an  AND 
+Gate and an inverter. 
+FULL SUBTRACTOR: 
+The full subtractor is a combination of X -OR, AND, OR, NOT Gates. In a full 
+subtractor the  logic circuit should have three inputs and two outputs. The two half 
+subtractor put together give a full subtractor.  
+ 
+ 
+ 
+ 
+ 
+ 
+
+=== PAGE 13 ===
+ 
+ Department of Electronics and Communications Engineering             CSE 207 
+Page No - 10 
+ 
+ 
+CIRCUIT DIAGRAM:  
+Half adder: 
+ 
+Half Subtractor: 
+ 
+ 
+Full Adder: 
+ 
+ 
+FULL SUBTRACTOR: 
+ 
+
+
+=== PAGE 14 ===
+ 
+ Department of Electronics and Communications Engineering             CSE 207 
+Page No - 11 
+ 
+ 
+ 
+PROCEDURE:  
+ 
+1. Verify the gates. 
+2. Make the connections as per the circuit diagram. 
+3. Switch on VCC and apply various combinations of input according to the truth table. 
+4. Note down the output readings for half/full adder and half/full subtractor, 
+Sum/difference and the carry /borrow bit for different combinations of inputs 
+verify their truth tables. 
+ 
+CONCLUSION: 
+
+=== PAGE 15 ===
+ 
+ Department of Electronics and Communications Engineering             CSE 207 
+Page No - 12 
+ 
+ 
+4. DESIGN OF MULTIPLEXER AND DE MULTIPLEXER 
+AIM: To design and implement a Multiplexer and a De multiplexer, and verify their truth 
+tables experimentally 
+ 
+APPARATUS :   1. IC- 74153,  74139 , 7404   
+2. Electronic circuit designer kit 
+3. Connecting patch cords 
+THEORY: 
+Multiplexer means many to one. A multiplexer is a circuit with many inputs but only one 
+output. By using control signals (select lines) we can select any input to the output. Multiplexer 
+is also called as data selector because the output bit depends on the input data bit that is selected. 
+The general idea about the multiplexing the circuit has N input signals, M control signals and 1 
+output signal.8 X 1 Multiplexer has 8 input signals and one output signal, three data control or 
+select lines. These data control lines are  nothing but 3 -bit binary code on the data control signal 
+inputs which will allow the data on the  corresponding data input to pass through to the  data 
+output. 
+ 
+CIRCUIT DIAGRAM:  
+ 
+MULTIPLEXER: 
+ 
+ 
+ 
+ 
+
+
+=== PAGE 16 ===
+ 
+ Department of Electronics and Communications Engineering             CSE 207 
+Page No - 13 
+ 
+ 
+ 
+ 
+DE MULTIPLEXER: 
+ 
+ 
+
+
+=== PAGE 17 ===
+ 
+ Department of Electronics and Communications Engineering             CSE 207 
+Page No - 14 
+ 
+ 
+ 
+PROCEDURE: - (IC 74153) 
+ 
+1. The Pin [16] is connected to + Vcc. 
+2. Pin [8] is connected to ground. 
+3. The inputs are applied either to ‘A’ input or ‘B’ input. 
+4. If MUX ‘A’ has to be initialized, Ea is made low and if MUX ‘B’  has to be initialized, Eb is     
+made low. 
+5. Based on the selection lines one of the inputs will be selected at the output and 
+thus verify the truth table. 
+ 
+PROCEDURE: - (IC 74139) 
+ 
+1. The inputs are applied to either ‘a’ input or ‘b’ input 
+2. The demux is activated by making Ea low and Eb low. 
+3.  Verify the truth table. 
+ 
+PROCEDURE: 
+1. Check all the components for their working. 
+2. Insert the appropriate IC into the IC base 
+3. Make connections as shown in the circuit diagram. 
+4. Verify the Truth Table and observe the outputs. 
+ 
+CONCLUSION: 
+ 
+  
+
+
+=== PAGE 18 ===
+ 
+ Department of Electronics and Communications Engineering             CSE 207 
+Page No - 15 
+ 
+ 
+5. DESIGNS OF DECODER AND ENCODER 
+AIM: To verify the operation of 8X3 Encoder and 3X8 Decoder using IC 74138 and 74148. 
+ 
+APPARATUS: 
+ 
+Equipment : Digital IC Trainer Kit 
+Discrete Components : IC- 74148, 74138 
+ 
+ENCODER: 
+A decoder is a multiple -input, multiple-output logic circuit that converts coded inputs into 
+coded outputs, where the input and output codes are different. Binary Decoder has n inputs 
+and 2n outputs also called as n-to-2n decoder. 
+DECODER: 
+Decoder is the combinational circuit which contains ‘n’ input lines to 2n output lines. The 
+decoder is used  for converting the binary code into the octal code. The IC74138 is the 3 x 8 
+decoder which contains three  inputs and 8 outputs  and also three  enables out of  them two 
+are active low and one is active  high. Decoders are used in the circuit where required to get 
+more outputs than that of the inputs. 
+ 
+ 
+Circuit Diagram: 
+ 
+
+
+=== PAGE 19 ===
+ 
+ Department of Electronics and Communications Engineering             CSE 207 
+Page No - 16 
+ 
+ 
+ 
+PROCEDURE: 
+Encoder:  
+1. Connect as per the diagram given. 
+2. Apply Vcc to pin 16 and Gnd to pin 8 of the 74148 (Encoder). 
+3. Connect the inputs (Io to I7) to pins 10, 11, 12, 13, 1, 2, 3, 4. 
+4. Connect pin 5 to GND. 
+5. Observe the outputs (Ao-A2) at pins 9, 7, 6.  
+6. Compare the truth table. 
+7. Note outputs of ecoder truth table. 
+Decoder: 
+1. Connect as per the diagram given. 
+2. Apply Vcc to pin 16 and Gnd to pin 8 of the 74138 (Decoder).  
+3. Connect the inputs to pins 1, 2, 3 for 74138. 
+4. Connect pin 4, 5 to GND and 6 to Vcc for 74138.  
+5.  Observe the outputs (Yo-Y7) at pins 15, 14, 13, 12, 11, 10, 9, 7 . 
+6. Compare the truth table. 
+7. Note outputs of decoder truth table. 
+ 
+ 
+CONCLUSION: 
+
+
+=== PAGE 20 ===
+ 
+ Department of Electronics and Communications Engineering             CSE 207 
+Page No - 17 
+ 
+ 
+6. DESIGN OF A MAGNITUDE COMPARATOR 
+ 
+AIM: To verify the truth table of one bit and four-bit comparators using logic Gates and IC 
+7485 
+ 
+APPARATUS: 
+ 
+Equipment : Digital IC Trainer Kit 
+               Discrete Components : IC 7485 
+ 
+THEORY: 
+ 
+A Magnitude Comparator is a logical circuit, which compares two signals A and B, and 
+generates three logical outputs, whether A > B, A  = B, or A < B. IC 7485 is a high speed 4 -bit 
+Magnitude comparator, which compares two 4 -bit words.  
+ 
+ 
+PROCEDURE: 
+ 
+1. Connect the circuit as shown in fig. Feed the 4 -bit binary words A0, A1, A2, A3 and  B0, 
+B1, B2, B3 from the logic input switches. 
+2. Pin 3 of IC 7485 should be at logic 1 to enable compare operation. 
+3. Observe the output A>B, A=B, and A<B on logic indicators. The outputs must be 1 or 0 
+respectively. 
+4. Repeat the steps 1 ,2 and 3 for various inputs A0, A1, A2, A3 and B0, B1, B2, B3 and 
+observe the outputs at A>B , A=B and A<B . 
+CONCLUSION: 
+ 
+  
+
+
+=== PAGE 21 ===
+ 
+ Department of Electronics and Communications Engineering             CSE 207 
+Page No - 18 
+ 
+ 
+7. DESIGN AND VERIFICATION OF FLIP -FLOPS  
+ 
+AIM: To design and construct basic flip-flops R-S, J-K, D, T flip-flops using IC and Verify the 
+truth  tables . 
+APPARATUS: 
+ 
+1. IC-7400, 7474, 7476. 
+2. NI ELVIS II+ 
+3. Connecting wires 
+4. Function Generator Probe 
+ 
+    THEORY: 
+• RS FLIP-FLOP: 
+There are two inputs to the flip -flop defined as R and S. When I/Ps R=0 and 
+S=0 then O/P  remains unchanged. When I/Ps R=0  and S=1 the flip -flop is 
+switched to the stable state where  O/P is 1 i.e. SET. The I/P condition is R=1 and 
+S=0 the flip-flop is switched to the stable state  where O/P is 0i.e. RESET. The I/P 
+condition is R=1 and S=1 the flip -flop is switched to the  stable state where O/P is 
+forbidden. 
+ 
+• JK FLIP-FLOP: 
+For the purpose  of counting, the JK flip -flop is the ideal element to use. The 
+variable J and K are  called control I/Ps because they determine what the flip -flop 
+does when a positive edge arrives.  When J and K are  both0s, both AND  gates are 
+disabled, and Q retain sits last value. 
+ 
+• D FLIP–FLOP: 
+This kind of flip -flop prevents the value of D from reaching the Q output until 
+clock pulses  occur. When the clock is low, both AND gates are disabled D can 
+change value without affecting the value of Q. On the other hand, when the clock is 
+high, both AND gates are enabled. In this  case, Q is forced to equal the value of D. 
+When the clock a gain goes low, Q retains or stores the last value of D.  A D flip-flop 
+is a bistable circuit whose D input is transferred to the output after a clock pulse is 
+received. 
+ 
+• T FLIP-FLOP: 
+The T or" toggle" flip flop changes its output on each clock edge, giving an output 
+which is half  the frequency of the signal to the T input. It is useful for constructing 
+binary counters, frequency dividers, and general binary addition devices. It can be 
+made from a J-K flip-flop by tying both of its inputs high. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+=== PAGE 22 ===
+ 
+ Department of Electronics and Communications Engineering             CSE 207 
+Page No - 19 
+ 
+ 
+CIRCUIT DIAGRAM: 
+ 
+ 
+ 
+JK FLIP FLOP USING IC: 
+                                                                                         Truth table: 
+ 
+ 
+ 
+ 
+ 
+T- FLIP FLOP USING IC: 
+                                                                                          Truth table: 
+  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+=== PAGE 23 ===
+ 
+ Department of Electronics and Communications Engineering             CSE 207 
+Page No - 20 
+ 
+ 
+D-FLIP FLOP USING IC 7474: - 
+ 
+ 
+ 
+TRUTH TABLE: 
+ 
+CL
+K 
+D Q 𝑸̅ 
+1 0 0 1 
+1 1 1 0 
+ 
+ 
+  PROCEDURE: 
+ 
+1. Connect the Flip-flop circuits as shown above.  
+2. Apply different combinations of inputs and observe the outputs.  
+3. Apply clock pulse by using function generator with  
+   Frequency -100Hz,  
+   Amplitude- 5V p-p,  
+   DC offset -2.48V  
+   Pulse -square 
+ 
+ 
+CONCLUSION: 
+ 
+
+
+=== PAGE 24 ===
+ 
+ Department of Electronics and Communications Engineering             CSE 207 
+Page No - 21 
+ 
+ 
+8. DESIGN OF JOHNSON AND RING COUNTERS  
+ 
+ 
+AIM: To design and verify the truth tables of Ring and Johnson counters  
+ 
+APPARATUS: 
+                1. IC – 7474  
+                 2. Electronic circuit designer 
+                      3. Connecting patch cords 
+THEORY: 
+A ring counter is a circular shift register which is initiated such that only one of its flip-
+flops is the state one while others are in their zero states. 
+A ring counter is a shift register (a cascade connection of flip-flops) with the output of 
+the last  one connected to the input of the first, that is, in a ring. Typically, a pattern 
+consisting of a single bit is circulated so the  state repeats  every n clock cycles if n flip -
+flops are used. 
+A Johnson counter (or switch-tail ring counter, twisted ring counter, walking ring 
+counter, or Mobius counter ) is a modified ring counter, where the output from the last 
+stage is inverted  and fed back as input to the first stage. The register cycles through a 
+sequence of bit -patterns, whose length is equal to twice the length of the shift register, 
+continuing indefinitely. These  counters find specialist applications, including those 
+similar to the decade counter, digital -to- analog conversion, etc. Th ey can be  
+implemented easily using D- or JK-type flip-flops. 
+ 
+CIRCUIT DIAGRAM:  
+ 
+RING COUNTER: 
+ 
+ 
+TRUTH TABLE: 
+ 
+CLK Q2 Q1 Q0 
+0 1 0 0 
+1 0 1 0 
+2 0 0 1 
+
+
+=== PAGE 25 ===
+ 
+ Department of Electronics and Communications Engineering             CSE 207 
+Page No - 22 
+ 
+ 
+JOHNSON COUNTER: 
+ 
+ 
+ 
+TRUTH TABLE: 
+ 
+ 
+ 
+CLK Q2 Q1 Q0 
+0 0 0 0 
+1 1 0 0 
+2 1 1 0 
+3 1 1 1 
+4 0 1 1 
+5 0 0 1 
+ 
+PROCEDURE: 
+1. Connections are made as per the circuit diagram 
+2. Switch on the power supply. 
+3. Apply clock pulses and note the outputs after each clock pulse 
+ 
+ 
+CONCLUSION: 
+
+
+=== PAGE 26 ===
+ 
+ Department of Electronics and Communications Engineering             CSE 207 
+Page No - 23 
+ 
+ 
+ 
+9. DESIGN OF A SYNCHRONOUS COUNTER  
+ 
+AIM: To design and construct a 3-bit Synchronous counter. 
+ 
+APPARATUS: 
+ 
+1. IC -7408, 7476 
+2. Electronic circuit designer 
+3. Connecting patch cords 
+4. Function generator probe. 
+THEORY: 
+A counter in which each flip -flop is triggered by the output goes to the previous  flip flop. As 
+all the flip-flops do not change state simultaneously in a synchronous counter, spike occurs at 
+the output. To avoid this, strobe pulse is requir ed. Because of the propagation delay the 
+operating speed of the asynchronous counter is low. This problem can be solved by triggering 
+all the flip -flops in synchronous with the clock signal and such counters are called 
+synchronous counters. 
+ 
+CIRCUIT DIAGRAM:  
+Vcc
+Vcc
+2
+4
+1
+16
+5
+15
+14
+13
+9
+6
+12
+11
+10
+7408 4
+1
+16
+3
+15
+14
+135
+2
+333Vcc Vcc8
+7
+PRE
+PRE
+PRE
+CLR
+CLR
+CLR
+QA QB QC
+GND
+Q
+Q
+Q
+Q
+Q
+Q
+1Hz
+3-bit Synchronous Counter
+7476 74767476
+ 
+
+=== PAGE 27 ===
+ 
+ Department of Electronics and Communications Engineering             CSE 207 
+Page No - 24 
+ 
+ 
+ 
+TRUTH TABLE: 
+ 
+ 
+ 
+ 
+PROCEDURE: 
+ 
+1. Function Generator settings:  
+Frequency: 1Hz, Amplitude: 5V  (p-p), DC offset: 2V, Clock Pulse - square wave 
+2. Connections are made as per the circuit diagram. 
+3. Connect pin no.7 to ground and pin no.14 to Vcc of IC 7408. 
+4. Similarly Connect pin no.13 to ground and pin no.5 to Vcc of IC 7476 as per the circuit 
+diagram. 
+5. Switch on the power supply. 
+6. Apply clock pulses and note the outputs after each clock pulse and note done the outputs. 
+ 
+ 
+ 
+ 
+CONCLUSION: 
+ 
+ 
+ 
+ 
+ 
+  
+
+
+=== PAGE 28 ===
+ 
+ Department of Electronics and Communications Engineering             CSE 207 
+Page No - 25 
+ 
+ 
+10. Design OF A DECADE COUNTER USING IC-74LS90 
+ 
+AIM: To construct and verify the working of a single digit decade counter using IC 7490.  
+ 
+APPARATUS:     1) IC 7490 Decade counters kit 
+     2) Connecting patch cards. 
+ 
+THEORY: 
+A decade counter is one that counts in decimal digits, rather than binary. A decade counter may  
+have each (that is, it may count in binary-coded decimal, as the 7490 integrated circuit did) or  
+other binary encodings. "A decade counter is a binary counter that is designed to count to 1010  
+(decimal 10). An ordina ry four-stage counter can  be easily modified to a  decade counter by 
+adding a NAND gate as in the schematic to the right. Notice that FF2 and FF4 provide the inputs 
+to the NAND gate. The NAND gate outputs are connected to the CLR input of each of the FFs." 
+A decade counter is one that counts in decimal digits, rather than binary. It counts from 0 to 9 
+and then resets to zero. The counter output can be set to zero by pulsing the reset line low. The 
+count then increments on each clock pulse until it reaches 10 01 (decimal 9). When it increments 
+to 1010 (decimal 10) both inputs of the NAND gate go high. The result is that the NAND output 
+goes low, and resets the counter to zero. D going low can be a CARRY OUT signal, indicating 
+that there has been a count of ten. 
+ 
+CIRCUIT DIAGRAM:                                                               
+ 
+ 
+TRUTH TABLE: - 
+
+
+=== PAGE 29 ===
+ 
+ Department of Electronics and Communications Engineering             CSE 207 
+Page No - 26 
+ 
+ 
+ 
+PROCEDURE: 
+1. Wire the circuit diagram shown in the above figure. 
+2. Connect the 1 Hz clock to pin-14. 
+3. Record the counter states for each clock pulse. 
+4. Design mod 6 counter using IC 7490 as shown in the above figure. 
+5. Record the counter states for each clock pulse. 
+ 
+ 
+CONCLUSION: 
+
+=== PAGE 30 ===
+ 
+ Department of Electronics and Communications Engineering             CSE 207 
+Page No - 27 
+ 
+ 
+ 
+11. DESIGN OF A UNIVERSAL SHIFT REGISTER  
+(Serial to Parallel, Parallel to Serial, Serial to Serial and Parallel to Parallel 
+Converters) 
+ 
+AIM: To study shift register using IC 7495 in all its modes i.e. SIPO/SISO, PISO/PIPO. 
+ 
+APPARATUS:   
+ 
+1. IC - 7495 
+2. Electronic Circuit Designer 
+3. Connecting patch cords. 
+THEORY: 
+ 
+In digital circuits,  a shift register is a cascade of flip flops, sharing the same clock, in which the 
+output of each flip -flop is connected to the "data" input of the next flip -flop in the chain, 
+resulting in a circuit that shifts by one position the " bit array" stored in it, "shifting in" the data 
+present at its input and 'shifting out' the last bit in the array, at each transition of the clock 
+input. 
+More generally, a  shift register may  be multidimensional, such that its  "data in" and stage  
+outputs are themselves bit arrays; this is implemented simply by running several shift registers 
+of the same bit- length in parallel. 
+Shift registers can have both parallel and serial inputs and outputs. These are often configured 
+as "serial-in, parallel -out" (SIPO) or as "parallel -in, serial -out" (PISO). There are also types that 
+have both serial and parallel in put and types with serial and parallel output. There are also 
+"bidirectional" shift registers which allow shifting in both directions: L→R or R→L. The serial 
+input and last output  of a shift register can also be connected to create a "circular shift regist er". 
+One register is PIPO  (parallel in parallel out), which is very  fast, within single clock  pulse, it is 
+giving output 
+ 
+CIRCUIT  DIAGRAM :  
+ 
+
+
+=== PAGE 31 ===
+ 
+ Department of Electronics and Communications Engineering             CSE 207 
+Page No - 28 
+ 
+ 
+ 
+ 
+ 
+PISO:- 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+=== PAGE 32 ===
+ 
+ Department of Electronics and Communications Engineering             CSE 207 
+Page No - 29 
+ 
+ 
+ 
+PROCEDURE:  
+ 
+Serial In Parallel Out(SIPO): 
+ 
+1. Connections are made as per circuit diagram. 
+2. Apply the data at serial i/p 
+3. Apply one clock pulse at clock 1 (Right Shift) observe this data at QA. 
+4. Apply the next data at serial i/p. 
+5. Apply one clock pulse at clock 2, observe that the data on QA will shift to QB and the 
+new data applied will appear at QA. 
+6. Repeat steps 2 and 3 till all the 4 bits data are entered one by one into the shift register. 
+ 
+Serial In Serial Out (SISO): 
+ 
+1. Connections are made as per circuit diagram. 
+2. Load the shift register with 4 bits of data one by one serially. 
+3. At the end of 4th clock pulse the first data ‘d0’ appears at QD. 
+4. Apply another clock pulse; the second data ‘d1’ appears at QD. 
+5. Apply another clock pulse; the third data appears at QD. 
+6. Application of next clock pulse will enable the 4th data ‘d3’ to appear at QD. Thus the data               
+applied serially at the input comes out serially at QD 
+ 
+Parallel In Serial out (PISO): 
+ 
+1. Connections are made as per circuit diagram. 
+2. Apply the desired 4-bit data at A, B, C and D. 
+3. Keeping the mode control M=1 apply one clock pulse. The data applied at A, B, C and D 
+will appear at QA, QB, QC and QD respectively. 
+4. Now mode control M=0. Apply clock pulses one by one and observe the Data coming out 
+serially at QD. 
+ 
+Parallel In Parallel Out (PIPO): 
+ 
+1. Connections are made as per circuit diagram. 
+2. Apply the 4 bit data at A, B, C and D. 
+3. Apply one clock pulse at Clock 2 (Note: Mode control M=1). 
+4. The 4 bit data at A, B, C and D appears at QA, QB, QC and QD respectively. 
+ 
+CONCLUSION: 
+

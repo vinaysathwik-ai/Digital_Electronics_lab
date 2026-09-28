@@ -235,13 +235,29 @@ class ManualPanel {
 
     // Detect if current board switch state matches any row
     let activeRowIdx = -1;
+    let mapping = (typeof window !== 'undefined' && window.app && window.app.lastReport && window.app.lastReport.mapping)
+      ? window.app.lastReport.mapping
+      : null;
+
+    if (!mapping && typeof window !== 'undefined' && window.app && window.app.engine && typeof TopologyVerifier !== 'undefined') {
+      try {
+        const topVerifier = new TopologyVerifier();
+        const topRes = topVerifier.verify(exp, window.app.engine);
+        if (topRes.passed) {
+          mapping = topRes.mapping;
+        }
+      } catch (e) {}
+    }
+
     if (typeof window !== 'undefined' && window.app && window.app.engine) {
       const curSw = window.app.engine.switches;
       for (let r = 0; r < tt.rows.length; r++) {
         const row = tt.rows[r];
         let match = true;
         for (let i = 0; i < exp.inputs.length; i++) {
-          const swIdx = exp.inputs[i].switchIndex;
+          const swIdx = (mapping && mapping.inputSwitches && mapping.inputSwitches[i] !== undefined)
+            ? mapping.inputSwitches[i]
+            : exp.inputs[i].switchIndex;
           if (curSw[swIdx] !== row.inputs[i]) {
             match = false;
             break;
@@ -258,7 +274,12 @@ class ManualPanel {
     let actualLeds = [];
     if (typeof window !== 'undefined' && window.app && window.app.engine) {
       const sim = window.app.engine.simulate();
-      actualLeds = exp.outputs.map(out => sim.ledOutputs[out.ledIndex]);
+      actualLeds = exp.outputs.map((out, idx) => {
+        const ledIdx = (mapping && mapping.outputLeds && mapping.outputLeds[idx] !== undefined)
+          ? mapping.outputLeds[idx]
+          : out.ledIndex;
+        return sim.ledOutputs[ledIdx];
+      });
     }
 
     return `

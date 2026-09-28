@@ -9,6 +9,8 @@ console.log(`Loaded ${EXPERIMENTS.length} experiments and sub-modes.`);
 
 let allPassed = true;
 
+// Part 1: Verify all reference circuits across all 17 experiments
+console.log('\n--- Part 1: Reference Circuits Verification ---');
 for (const exp of EXPERIMENTS) {
   const engine = new NetlistEngine();
   const verifier = new LabVerifier(engine);
@@ -36,8 +38,12 @@ for (const exp of EXPERIMENTS) {
   }
 }
 
+// Part 2: Verify Flexible Role-Based System (Tests 1 through 10 + edge cases)
+console.log('\n--- Part 2: Flexible Role-Based Circuit Verification ---');
+require('./test_role_based_verifier.js');
+
 if (allPassed) {
-  console.log('\n>>> SUCCESS: ALL EXPERIMENTS AND REFERENCE CIRCUITS VERIFIED 100%! <<<');
+  console.log('\n>>> SUCCESS: ALL EXPERIMENTS AND ROLE-BASED VERIFICATION TESTS VERIFIED 100%! <<<');
   process.exit(0);
 } else {
   console.error('\n>>> SOME EXPERIMENTS FAILED VERIFICATION <<<');

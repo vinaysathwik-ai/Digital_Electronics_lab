@@ -122,6 +122,7 @@ class TrainerApp {
 
   loadExperiment(exp) {
     this.currentExp = exp;
+    this.lastReport = null;
     this.wireManager.setSelectedWire(null);
     this.engine.clearWires();
 
@@ -178,6 +179,7 @@ class TrainerApp {
 
   verifyCurrentExperiment() {
     const report = this.verifier.verify(this.currentExp);
+    this.lastReport = report;
     if (report.passed) {
       this.manualPanel.markCompleted(this.currentExp.id);
     }

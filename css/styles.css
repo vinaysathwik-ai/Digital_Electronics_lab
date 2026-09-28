@@ -182,6 +182,24 @@ body.trainer-theme-light, body {
   border-color: #3b8e90;
 }
 
+.nav-btn.btn-remove-wire {
+  transition: all 0.2s ease;
+}
+
+.nav-btn.btn-remove-wire.has-selection {
+  background: #fff1f2;
+  border-color: #f43f5e;
+  color: #e11d48;
+  box-shadow: 0 0 8px rgba(244, 63, 94, 0.35);
+  font-weight: 700;
+}
+
+.nav-btn.btn-remove-wire.has-selection:hover {
+  background: #ffe4e6;
+  border-color: #e11d48;
+  color: #be123c;
+}
+
 /* ==========================================================================
    Main App Layout: Split View (Trainer Kit + Observation Book)
    ========================================================================== */

@@ -92,7 +92,8 @@ class WireManager {
   }
 
   initEventListeners() {
-    const doc = (this.svg && this.svg.ownerDocument) ? this.svg.ownerDocument : document;
+    const doc = (this.svg && this.svg.ownerDocument) ? this.svg.ownerDocument : (typeof document !== 'undefined' ? document : null);
+    if (!doc) return;
 
     // Pointer down on terminal
     doc.addEventListener('pointerdown', (e) => {
@@ -194,8 +195,7 @@ class WireManager {
     // Keyboard delete
     doc.addEventListener('keydown', (e) => {
       if ((e.key === 'Delete' || e.key === 'Backspace') && this.selectedWireId) {
-        this.engine.removeWire(this.selectedWireId);
-        this.setSelectedWire(null);
+        this.removeSelectedWire();
         e.preventDefault();
       } else if (e.key === 'Escape' && this.activeWire) {
         this.cancelDrawingWire();
@@ -315,6 +315,19 @@ class WireManager {
   setSelectedWire(wireId) {
     this.selectedWireId = wireId;
     this.render();
+    if (typeof this.onSelectionChange === 'function') {
+      this.onSelectionChange(wireId);
+    }
+  }
+
+  removeSelectedWire() {
+    if (this.selectedWireId) {
+      const removedId = this.selectedWireId;
+      this.setSelectedWire(null);
+      this.engine.removeWire(removedId);
+      return true;
+    }
+    return false;
   }
 
   /**
@@ -340,6 +353,14 @@ class WireManager {
 
   render() {
     if (!this.svg) return;
+
+    // Verify selected wire still exists in engine
+    if (this.selectedWireId && !this.engine.wires.some(w => w.id === this.selectedWireId)) {
+      this.selectedWireId = null;
+      if (typeof this.onSelectionChange === 'function') {
+        this.onSelectionChange(null);
+      }
+    }
 
     // Clear svg contents
     while (this.svg.firstChild) {

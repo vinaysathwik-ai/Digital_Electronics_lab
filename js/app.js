@@ -34,6 +34,14 @@ class TrainerApp {
 
     this.verifier = new LabVerifier(this.engine);
 
+    // Track wire selection state on remove button
+    this.wireManager.onSelectionChange = (wireId) => {
+      const btnRemove = document.getElementById('btn-remove-wire');
+      if (btnRemove) {
+        btnRemove.classList.toggle('has-selection', !!wireId);
+      }
+    };
+
     // Bind engine change events
     this.engine.onChange(() => {
       this.handleCircuitStateChange();
@@ -102,6 +110,7 @@ class TrainerApp {
 
   loadExperiment(exp) {
     this.currentExp = exp;
+    this.wireManager.setSelectedWire(null);
     this.engine.clearWires();
 
     // Reset sockets & auto-insert default ICs for this experiment
@@ -123,6 +132,7 @@ class TrainerApp {
 
   loadReferenceCircuit() {
     if (!this.currentExp) return;
+    this.wireManager.setSelectedWire(null);
     this.engine.clearWires();
 
     // Ensure sockets have the required ICs
@@ -280,14 +290,30 @@ class TrainerApp {
   setupToolbarEvents() {
     // Clear wires: works directly on click without blocking popups!
     document.getElementById('btn-clear-wires').addEventListener('click', () => {
+      this.wireManager.setSelectedWire(null);
       this.engine.clearWires();
       this.handleCircuitStateChange();
       this.wireManager.render();
       this.showToast('All patch cords cleared.');
     });
 
+    // Remove single selected wire
+    const btnRemoveWire = document.getElementById('btn-remove-wire');
+    if (btnRemoveWire) {
+      btnRemoveWire.addEventListener('click', () => {
+        if (this.wireManager.selectedWireId) {
+          this.wireManager.removeSelectedWire();
+          this.handleCircuitStateChange();
+          this.showToast('Selected wire removed.');
+        } else {
+          this.showToast('Click a wire to select it first.');
+        }
+      });
+    }
+
     // Reset board: works directly on click
     document.getElementById('btn-reset-board').addEventListener('click', () => {
+      this.wireManager.setSelectedWire(null);
       this.engine.clearWires();
       for (let s = 0; s < this.engine.sockets.length; s++) {
         this.engine.removeIC(s);

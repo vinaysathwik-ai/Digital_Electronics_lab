@@ -19,8 +19,9 @@ class LabVerifier {
   /**
    * Run verification on the currently selected experiment
    * @param {Object} experiment - Experiment definition from EXPERIMENTS
+   * @param {Object} [options={}] - Verification options (e.g. { debug: boolean })
    */
-  verify(experiment) {
+  verify(experiment, options = {}) {
     const report = {
       experimentId: experiment.id,
       experimentTitle: experiment.title,
@@ -59,7 +60,7 @@ class LabVerifier {
       .map(s => s.ic.partNumber);
 
     const missingICs = [];
-    for (const req of experiment.requiredICs) {
+    for (const req of (experiment.requiredICs || [])) {
       if (!installedICs.includes(req)) {
         missingICs.push(req);
       }
@@ -71,7 +72,7 @@ class LabVerifier {
         status: 'FAILED',
         detail: `Missing required IC(s): ${missingICs.join(', ')}. Please insert from the component tray.`
       });
-      report.instructorRemarks.push(`Incomplete setup: Expected IC(s) ${missingICs.join(', ')} on trainer kit.`);
+      report.instructorRemarks.push(`Incomplete setup: Required IC(s) ${missingICs.join(', ')} must be installed on the trainer kit.`);
       return report;
     } else {
       report.structuralChecks.push({
@@ -88,7 +89,7 @@ class LabVerifier {
       if (!sock.ic) continue;
       const status = initialSim.icStatus[s];
       if (!status || !status.powered) {
-        powerFailures.push(`${sock.label} (${sock.ic.partNumber}): VCC or GND disconnected.`);
+        powerFailures.push(`The required power connection (VCC/GND) for the ${sock.ic.partNumber} is missing or disconnected.`);
       }
     }
 
@@ -114,7 +115,11 @@ class LabVerifier {
       throw new Error('TopologyVerifier is not available.');
     }
     const topologyVerifier = new VerifierClass();
-    const topologyResult = topologyVerifier.verify(experiment, this.engine);
+    const topologyResult = topologyVerifier.verify(experiment, this.engine, options);
+
+    if (options.debug && topologyResult.debug) {
+      report.debug = topologyResult.debug;
+    }
 
     if (!topologyResult.passed) {
       report.structuralChecks.push({

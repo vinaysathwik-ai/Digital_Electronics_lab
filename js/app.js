@@ -47,9 +47,14 @@ class TrainerApp {
       this.handleCircuitStateChange();
     });
 
-    // Window resize handler for wire rendering
+    // Window resize & orientation change handler for wire rendering
     window.addEventListener('resize', () => {
       this.wireManager.render();
+    });
+    window.addEventListener('orientationchange', () => {
+      setTimeout(() => {
+        this.wireManager.render();
+      }, 250);
     });
 
     this.setupToolbarEvents();
@@ -104,6 +109,13 @@ class TrainerApp {
     if (floatingTab) {
       floatingTab.addEventListener('click', () => {
         this.toggleSidebar(true);
+      });
+    }
+
+    const backdrop = document.getElementById('sidebar-backdrop');
+    if (backdrop) {
+      backdrop.addEventListener('click', () => {
+        this.toggleSidebar(false);
       });
     }
   }

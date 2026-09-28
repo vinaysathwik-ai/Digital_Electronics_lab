@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
   <title>Digital Electronics Virtual Trainer Kit | SRM DE Lab ECE 211 / CSE 207</title>
   <meta name="description" content="Interactive Virtual Digital IC Trainer Kit replicating physical laboratory hardware for Experiments 1-5 from SRM Digital Electronics Lab manual.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -42,6 +42,9 @@
     <button class="floating-sidebar-tab" id="floating-sidebar-tab" title="Open Lab Manual & Observation Book">
       <span class="tab-label">Lab Manual</span>
     </button>
+
+    <!-- Backdrop overlay for mobile drawer -->
+    <div class="sidebar-backdrop" id="sidebar-backdrop" aria-hidden="true"></div>
 
     <!-- Right: SRM Lab Observation Book & Live Verification Panel -->
     <aside class="manual-sidebar-panel" id="manual-panel-container" aria-label="Laboratory Observation Book and Live Truth Table">

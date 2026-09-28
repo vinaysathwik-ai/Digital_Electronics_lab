@@ -192,6 +192,13 @@ class WireManager {
       }
     });
 
+    // Pointer cancel (mobile gesture / call / interrupt)
+    doc.addEventListener('pointercancel', () => {
+      if (this.activeWire) {
+        this.cancelDrawingWire();
+      }
+    });
+
     // Keyboard delete
     doc.addEventListener('keydown', (e) => {
       if ((e.key === 'Delete' || e.key === 'Backspace') && this.selectedWireId) {

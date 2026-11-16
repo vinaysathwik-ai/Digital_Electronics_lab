@@ -153,6 +153,17 @@ class ManualPanel {
         window.app.verifyCurrentExperiment();
       }
     });
+
+    // Checklist "Open Experiment" buttons
+    this.container.querySelectorAll('.btn-check-select').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const expId = btn.dataset.expId;
+        const exp = EXPERIMENTS.find(e => e.id === expId);
+        if (exp && this.onExperimentChange) {
+          this.onExperimentChange(exp);
+        }
+      });
+    });
   }
 
   renderTabContent() {
@@ -162,8 +173,6 @@ class ManualPanel {
       case 'pinouts': return this.renderICPinoutsTab();
       case 'checklist': return this.renderChecklistTab();
       default: return this.renderTheoryProcedureTab();
-    }
-  }
     }
   }
 
@@ -224,7 +233,7 @@ class ManualPanel {
             <div class="fg-row"><span class="fg-label">Waveform:</span> <span class="fg-value">${exp.functionGenerator.waveform}</span></div>
             <div class="fg-row"><span class="fg-label">Fn.Gen (+) →</span> <span class="fg-value fg-clk">${exp.functionGenerator.positive}</span></div>
             <div class="fg-row"><span class="fg-label">Fn.Gen (−) →</span> <span class="fg-value fg-gnd">GND (Ground Rail)</span></div>
-            <div class="alert-box alert-fg">In the simulator, SW 0 acts as the clock — toggle it to simulate one clock pulse at a time.</div>
+            <div class="alert-box alert-fg">In the simulator, use the <strong>PULSE</strong> button on the Function Generator panel to send a single clock pulse, or <strong>RUN</strong> to auto-clock continuously. Wire FG (+) to the CLK pin and FG (−) to GND.</div>
           </div>
         </div>
         ` : ''}

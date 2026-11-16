@@ -493,8 +493,10 @@ class BoardView {
         const btnEject = sockCard.querySelector('.btn-eject-ic');
         btnEject.addEventListener('click', () => {
           this.engine.removeIC(s);
-          if (typeof window !== 'undefined' && window.app && window.app.playSound) {
-            window.app.playSound('eject');
+          this.renderSockets();
+          if (typeof window !== 'undefined' && window.app) {
+            window.app.handleCircuitStateChange();
+            window.app.showToast(`IC ejected from Socket ${s + 1}.`);
           }
         });
       }

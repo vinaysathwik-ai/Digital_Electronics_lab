@@ -541,6 +541,360 @@ const IC_DEFINITIONS = {
     }
   },
 
+  // ==========================================
+  // SEQUENTIAL / FLIP-FLOP ICs
+  // ==========================================
+
+  '7474': {
+    partNumber: '7474',
+    name: 'Dual D-Type Positive Edge Triggered Flip-Flop',
+    category: 'MSI',
+    pinCount: 14,
+    vccPin: 14,
+    gndPin: 7,
+    description: 'Dual D Flip-Flop with Set (PRE) and Reset (CLR) active-low asynchronous inputs. Triggers on rising edge of CLK.',
+    pins: {
+      1:  { name: '1CLR', type: 'input',  role: 'CLR_1',  activeLow: true  },
+      2:  { name: '1D',   type: 'input',  role: 'D_1'   },
+      3:  { name: '1CLK', type: 'input',  role: 'CLK_1'  },
+      4:  { name: '1PRE', type: 'input',  role: 'PRE_1',  activeLow: true  },
+      5:  { name: '1Q',   type: 'output', role: 'Q_1'   },
+      6:  { name: '1Q\'', type: 'output', role: 'QB_1'  },
+      7:  { name: 'GND',  type: 'power',  role: 'GND'   },
+      8:  { name: '2Q\'', type: 'output', role: 'QB_2'  },
+      9:  { name: '2Q',   type: 'output', role: 'Q_2'   },
+      10: { name: '2PRE', type: 'input',  role: 'PRE_2',  activeLow: true  },
+      11: { name: '2CLK', type: 'input',  role: 'CLK_2'  },
+      12: { name: '2D',   type: 'input',  role: 'D_2'   },
+      13: { name: '2CLR', type: 'input',  role: 'CLR_2',  activeLow: true  },
+      14: { name: 'VCC',  type: 'power',  role: 'VCC'   }
+    },
+    evaluate: (pinValues, state, options = {}) => {
+      state = state || {};
+      const outputs = {};
+      const isFirstPass = (options.pass === 0 || options.pass === undefined);
+
+      // Flip-Flop 1
+      const pre1 = pinValues[4];
+      const clr1 = pinValues[1];
+      const d1   = pinValues[2];
+      const clk1 = pinValues[3];
+
+      if (pre1 === 0 && clr1 !== 0) {
+        state.q1 = 1;
+      } else if (clr1 === 0 && pre1 !== 0) {
+        state.q1 = 0;
+      } else if (isFirstPass) {
+        let shouldLatch = false;
+        if (options.rowIdx !== undefined) {
+          if (state.lastRowIdx1 !== options.rowIdx) {
+            state.lastRowIdx1 = options.rowIdx;
+            if (options.rowIdx > 0) shouldLatch = true;
+          }
+        } else if (clk1 === 1 && state.lastClk1 === 0) {
+          shouldLatch = true;
+        }
+        if (shouldLatch && d1 !== undefined) {
+          state.q1 = d1;
+        }
+      }
+      state.lastClk1 = clk1;
+      if (state.q1 === undefined) state.q1 = 0;
+      outputs[5] = state.q1;
+      outputs[6] = state.q1 === 1 ? 0 : 1;
+
+      // Flip-Flop 2
+      const pre2 = pinValues[10];
+      const clr2 = pinValues[13];
+      const d2   = pinValues[12];
+      const clk2 = pinValues[11];
+
+      if (pre2 === 0 && clr2 !== 0) {
+        state.q2 = 1;
+      } else if (clr2 === 0 && pre2 !== 0) {
+        state.q2 = 0;
+      } else if (isFirstPass) {
+        let shouldLatch = false;
+        if (options.rowIdx !== undefined) {
+          if (state.lastRowIdx2 !== options.rowIdx) {
+            state.lastRowIdx2 = options.rowIdx;
+            if (options.rowIdx > 0) shouldLatch = true;
+          }
+        } else if (clk2 === 1 && state.lastClk2 === 0) {
+          shouldLatch = true;
+        }
+        if (shouldLatch && d2 !== undefined) {
+          state.q2 = d2;
+        }
+      }
+      state.lastClk2 = clk2;
+      if (state.q2 === undefined) state.q2 = 0;
+      outputs[9]  = state.q2;
+      outputs[8]  = state.q2 === 1 ? 0 : 1;
+
+      return outputs;
+    }
+  },
+
+  '7476': {
+    partNumber: '7476',
+    name: 'Dual JK Master-Slave Flip-Flop (with Set & Clear)',
+    category: 'MSI',
+    pinCount: 16,
+    vccPin: 5,
+    gndPin: 13,
+    description: 'Dual JK Flip-Flop with asynchronous active-low PRE and CLR. TI SN7476 standard pinout: Vcc=Pin5, GND=Pin13, FF1(CLK=1, PRE=2, CLR=3, J=4, Q=15, Q\'=14, K=16), FF2(CLK=6, PRE=7, CLR=8, J=9, Q\'=10, Q=11, K=12).',
+    pins: {
+      1:  { name: '1CLK', type: 'input',  role: 'CLK_1'  },
+      2:  { name: '1PRE', type: 'input',  role: 'PRE_1',  activeLow: true  },
+      3:  { name: '1CLR', type: 'input',  role: 'CLR_1',  activeLow: true  },
+      4:  { name: '1J',   type: 'input',  role: 'J_1'   },
+      5:  { name: 'VCC',  type: 'power',  role: 'VCC'   },
+      6:  { name: '2CLK', type: 'input',  role: 'CLK_2'  },
+      7:  { name: '2PRE', type: 'input',  role: 'PRE_2',  activeLow: true  },
+      8:  { name: '2CLR', type: 'input',  role: 'CLR_2',  activeLow: true  },
+      9:  { name: '2J',   type: 'input',  role: 'J_2'   },
+      10: { name: '2Q\'', type: 'output', role: 'QB_2'  },
+      11: { name: '2Q',   type: 'output', role: 'Q_2'   },
+      12: { name: '2K',   type: 'input',  role: 'K_2'   },
+      13: { name: 'GND',  type: 'power',  role: 'GND'   },
+      14: { name: '1Q\'', type: 'output', role: 'QB_1'  },
+      15: { name: '1Q',   type: 'output', role: 'Q_1'   },
+      16: { name: '1K',   type: 'input',  role: 'K_1'   }
+    },
+    evaluate: (pinValues, state, options = {}) => {
+      state = state || {};
+      const outputs = {};
+      const isFirstPass = (options.pass === 0 || options.pass === undefined);
+
+      // JK FF 1
+      const pre1 = pinValues[2];
+      const clr1 = pinValues[3];
+      const j1   = pinValues[4];
+      const k1   = pinValues[16];
+      const clk1 = pinValues[1];
+
+      if (pre1 === 0 && clr1 !== 0) {
+        state.q1 = 1;
+      } else if (clr1 === 0 && pre1 !== 0) {
+        state.q1 = 0;
+      } else if (isFirstPass) {
+        let shouldClock = false;
+        if (options.rowIdx !== undefined) {
+          if (state.lastRowIdx1 !== options.rowIdx) {
+            state.lastRowIdx1 = options.rowIdx;
+            shouldClock = (clk1 === 1 || clk1 > 0);
+          }
+        } else if (clk1 === 1 && state.lastClk1 === 0) {
+          shouldClock = true;
+        }
+
+        if (shouldClock) {
+          if (state.q1 === undefined) state.q1 = 0;
+          const j = j1 !== undefined ? j1 : 0;
+          const k = k1 !== undefined ? k1 : 0;
+          if (j === 0 && k === 0) { /* hold */ }
+          else if (j === 0 && k === 1) { state.q1 = 0; }
+          else if (j === 1 && k === 0) { state.q1 = 1; }
+          else if (j === 1 && k === 1) { state.q1 = state.q1 === 1 ? 0 : 1; }
+        }
+      }
+      state.lastClk1 = clk1;
+      if (state.q1 === undefined) state.q1 = 0;
+      outputs[15] = state.q1;
+      outputs[14] = state.q1 === 1 ? 0 : 1;
+
+      // JK FF 2
+      const pre2 = pinValues[7];
+      const clr2 = pinValues[8];
+      const j2   = pinValues[9];
+      const k2   = pinValues[12];
+      const clk2 = pinValues[6];
+
+      if (pre2 === 0 && clr2 !== 0) {
+        state.q2 = 1;
+      } else if (clr2 === 0 && pre2 !== 0) {
+        state.q2 = 0;
+      } else if (isFirstPass) {
+        let shouldClock = false;
+        if (options.rowIdx !== undefined) {
+          if (state.lastRowIdx2 !== options.rowIdx) {
+            state.lastRowIdx2 = options.rowIdx;
+            shouldClock = (clk2 === 1 || clk2 > 0);
+          }
+        } else if (clk2 === 1 && state.lastClk2 === 0) {
+          shouldClock = true;
+        }
+
+        if (shouldClock) {
+          if (state.q2 === undefined) state.q2 = 0;
+          const j = j2 !== undefined ? j2 : 0;
+          const k = k2 !== undefined ? k2 : 0;
+          if (j === 0 && k === 0) { /* hold */ }
+          else if (j === 0 && k === 1) { state.q2 = 0; }
+          else if (j === 1 && k === 0) { state.q2 = 1; }
+          else if (j === 1 && k === 1) { state.q2 = state.q2 === 1 ? 0 : 1; }
+        }
+      }
+      state.lastClk2 = clk2;
+      if (state.q2 === undefined) state.q2 = 0;
+      outputs[11] = state.q2;
+      outputs[10] = state.q2 === 1 ? 0 : 1;
+
+      return outputs;
+    }
+  },
+
+  '7490': {
+    partNumber: '7490',
+    name: 'Decade Counter (Divide-by-2 and Divide-by-5)',
+    category: 'MSI',
+    pinCount: 14,
+    vccPin: 5,
+    gndPin: 10,
+    description: 'BCD decade counter. CLK A on Pin 14, CLK B on Pin 1. Reset to 0: R0(1)=Pin2, R0(2)=Pin3 both HIGH. Reset to 9: R9(1)=Pin6, R9(2)=Pin7 both HIGH. QA=Pin12, QB=Pin9, QC=Pin8, QD=Pin11. Vcc=Pin5, GND=Pin10.',
+    pins: {
+      1:  { name: 'CKB',   type: 'input',  role: 'CLK_B'  },
+      2:  { name: 'R0(1)', type: 'input',  role: 'RESET0_1' },
+      3:  { name: 'R0(2)', type: 'input',  role: 'RESET0_2' },
+      4:  { name: 'NC',    type: 'nc',     role: 'NC'     },
+      5:  { name: 'VCC',   type: 'power',  role: 'VCC'   },
+      6:  { name: 'R9(1)', type: 'input',  role: 'RESET9_1' },
+      7:  { name: 'R9(2)', type: 'input',  role: 'RESET9_2' },
+      8:  { name: 'QC',    type: 'output', role: 'QC'    },
+      9:  { name: 'QB',    type: 'output', role: 'QB'    },
+      10: { name: 'GND',   type: 'power',  role: 'GND'   },
+      11: { name: 'QD',    type: 'output', role: 'QD'    },
+      12: { name: 'QA',    type: 'output', role: 'QA'    },
+      13: { name: 'NC',    type: 'nc',     role: 'NC'    },
+      14: { name: 'CKA',   type: 'input',  role: 'CLK_A'  }
+    },
+    evaluate: (pinValues, state, options = {}) => {
+      state = state || {};
+      const outputs = {};
+      const isFirstPass = (options.pass === 0 || options.pass === undefined);
+
+      const r01 = pinValues[2];
+      const r02 = pinValues[3];
+      const r91 = pinValues[6];
+      const r92 = pinValues[7];
+      const clka = pinValues[14];
+
+      // Reset to 0
+      if (r01 === 1 && r02 === 1) {
+        state.count = 0;
+      }
+      // Reset to 9
+      else if (r91 === 1 && r92 === 1) {
+        state.count = 9;
+      }
+      // Count on CLK A
+      else if (isFirstPass) {
+        let shouldCount = false;
+        if (options.rowIdx !== undefined) {
+          if (state.lastRowIdx !== options.rowIdx) {
+            state.lastRowIdx = options.rowIdx;
+            // rowIdx 0 is initial state (0), count advances on subsequent rows
+            if (options.rowIdx > 0) shouldCount = true;
+          }
+        } else if (clka === 1 && state.lastClk !== 1) {
+          shouldCount = true;
+        }
+
+        if (shouldCount) {
+          state.count = ((state.count || 0) + 1) % 10;
+        }
+      }
+      state.lastClk = clka;
+
+      const cnt = state.count || 0;
+      outputs[12] = (cnt & 1) ? 1 : 0;        // QA (bit 0)
+      outputs[9]  = (cnt & 2) ? 1 : 0;        // QB (bit 1)
+      outputs[8]  = (cnt & 4) ? 1 : 0;        // QC (bit 2)
+      outputs[11] = (cnt & 8) ? 1 : 0;        // QD (bit 3)
+
+      return outputs;
+    }
+  },
+
+  '7495': {
+    partNumber: '7495',
+    name: '4-Bit Right/Left Shift Register (SIPO/PISO/SISO/PIPO)',
+    category: 'MSI',
+    pinCount: 14,
+    vccPin: 14,
+    gndPin: 7,
+    description: '4-bit bidirectional shift register. Mode=0: serial shift right on CLK1 (Pin9). Mode=1: parallel load on CLK2 (Pin8). Serial In=Pin1. Parallel Inputs A-D = Pins 2,3,4,5. Outputs QA-QD = Pins 13,12,11,10.',
+    pins: {
+      1:  { name: 'SER',   type: 'input',  role: 'SERIAL_IN' },
+      2:  { name: 'A',     type: 'input',  role: 'PAR_A'  },
+      3:  { name: 'B',     type: 'input',  role: 'PAR_B'  },
+      4:  { name: 'C',     type: 'input',  role: 'PAR_C'  },
+      5:  { name: 'D',     type: 'input',  role: 'PAR_D'  },
+      6:  { name: 'MODE',  type: 'input',  role: 'MODE'   },
+      7:  { name: 'GND',   type: 'power',  role: 'GND'   },
+      8:  { name: 'CLK2',  type: 'input',  role: 'CLK_2'  },
+      9:  { name: 'CLK1',  type: 'input',  role: 'CLK_1'  },
+      10: { name: 'QD',    type: 'output', role: 'QD'    },
+      11: { name: 'QC',    type: 'output', role: 'QC'    },
+      12: { name: 'QB',    type: 'output', role: 'QB'    },
+      13: { name: 'QA',    type: 'output', role: 'QA'    },
+      14: { name: 'VCC',   type: 'power',  role: 'VCC'   }
+    },
+    evaluate: (pinValues, state, options = {}) => {
+      state = state || {};
+      const outputs = {};
+      const isFirstPass = (options.pass === 0 || options.pass === undefined);
+
+      const mode = pinValues[6];
+      const clk2 = pinValues[8]; // Parallel clock
+      const clk1 = pinValues[9]; // Serial clock
+      const ser  = pinValues[1];
+      const pa = pinValues[2], pb = pinValues[3], pc = pinValues[4], pd = pinValues[5];
+
+      if (state.reg === undefined) state.reg = [0, 0, 0, 0]; // [QA, QB, QC, QD]
+
+      if (isFirstPass) {
+        let shouldStep = false;
+        if (options.rowIdx !== undefined) {
+          if (state.lastRowIdx !== options.rowIdx) {
+            state.lastRowIdx = options.rowIdx;
+            shouldStep = true;
+          }
+        } else {
+          const activeClk = (mode === 1) ? clk2 : clk1;
+          if (activeClk === 1 && state.lastClk !== 1) {
+            shouldStep = true;
+          }
+        }
+
+        if (shouldStep) {
+          if (mode === 1) {
+            // Parallel load
+            state.reg = [
+              pa !== undefined ? pa : 0,
+              pb !== undefined ? pb : 0,
+              pc !== undefined ? pc : 0,
+              pd !== undefined ? pd : 0
+            ];
+          } else {
+            // Serial shift right
+            const sin = ser !== undefined ? ser : 0;
+            state.reg = [sin, state.reg[0], state.reg[1], state.reg[2]];
+          }
+        }
+      }
+      state.lastClk = (mode === 1) ? clk2 : clk1;
+
+      outputs[13] = state.reg[0]; // QA
+      outputs[12] = state.reg[1]; // QB
+      outputs[11] = state.reg[2]; // QC
+      outputs[10] = state.reg[3]; // QD
+
+      return outputs;
+    }
+  },
+
   '7485': {
     partNumber: '7485',
     name: '4-Bit Magnitude Comparator',

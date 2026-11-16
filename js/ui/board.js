@@ -10,6 +10,7 @@ class BoardView {
     this.container = containerEl;
     this.wireManager = wireManager;
     this.simResult = null;
+    this.clockInterval = null;
     this.initBoardDOM();
   }
 
@@ -52,14 +53,75 @@ class BoardView {
 
         <!-- Main Workspace Area -->
         <div class="trainer-main-deck">
-          <!-- Left: 8 DIP Toggle Switches -->
-          <div class="deck-section switch-bank-section">
-            <div class="section-title">
-              <span>LOGIC INPUT SWITCHES</span>
-              <span class="info-tag">TTL 0/1</span>
+          <!-- Left Column: Switches & Function Generator -->
+          <div class="deck-column deck-left-column">
+            <!-- 8 DIP Toggle Switches -->
+            <div class="deck-section switch-bank-section">
+              <div class="section-title">
+                <span>LOGIC INPUT SWITCHES</span>
+                <span class="info-tag">TTL 0/1</span>
+              </div>
+              <div class="switch-grid" id="switch-grid">
+                <!-- 8 switches -->
+              </div>
             </div>
-            <div class="switch-grid" id="switch-grid">
-              <!-- 8 switches -->
+
+            <!-- Function Generator / TTL Clock Source -->
+            <div class="deck-section func-gen-section" id="func-gen-panel">
+              <div class="section-title">
+                <span>FUNCTION GENERATOR</span>
+                <span class="info-tag fg-status-pill" id="fg-status-pill">TTL CLK</span>
+              </div>
+
+              <!-- Digital LCD Screen -->
+              <div class="fg-lcd-screen">
+                <div class="fg-lcd-row top-row">
+                  <span class="fg-lcd-item"><span class="lcd-lbl">FREQ</span><strong id="fg-disp-freq">100 Hz</strong></span>
+                  <span class="fg-lcd-item"><span class="lcd-lbl">WAVE</span><strong id="fg-disp-wave">SQUARE</strong></span>
+                </div>
+                <div class="fg-lcd-row btm-row">
+                  <span class="fg-lcd-item"><span class="lcd-lbl">AMP</span><strong id="fg-disp-amp">5.0 Vpp</strong></span>
+                  <span class="fg-lcd-item"><span class="lcd-lbl">OFFSET</span><strong id="fg-disp-offset">+2.48 V</strong></span>
+                </div>
+              </div>
+
+              <!-- Controls: Pulse Step Button & Run/Stop -->
+              <div class="fg-controls-row">
+                <button class="fg-ctrl-btn btn-fg-pulse" id="btn-fg-pulse" title="Single Clock Pulse (0 → 1 → 0)">
+                  <span class="pulse-icon">⚡</span>
+                  <span>PULSE</span>
+                </button>
+                <button class="fg-ctrl-btn btn-fg-run" id="btn-fg-run" title="Toggle Continuous Clock Run / Stop">
+                  <span class="run-dot" id="fg-run-dot"></span>
+                  <span id="fg-run-label">RUN</span>
+                </button>
+              </div>
+
+              <!-- Terminals Bay: (+) CLK, Live LED, (−) GND -->
+              <div class="fg-terminals-bay">
+                <div class="fg-term-unit">
+                  <div class="banana-jack jack-red trainer-terminal" data-node-key="FG_POS" title="Function Generator (+) Clock Output">
+                    <span class="jack-rim"></span>
+                    <span class="jack-hole"></span>
+                    <span class="pin-status-dot" id="dot-FG_POS"></span>
+                  </div>
+                  <span class="fg-term-caption">(+) CLK</span>
+                </div>
+
+                <div class="fg-clock-indicator-wrap" title="Live Clock Level">
+                  <div class="fg-clk-led" id="fg-clk-led"></div>
+                  <span class="fg-clk-val low" id="fg-clk-val">LOW (0)</span>
+                </div>
+
+                <div class="fg-term-unit">
+                  <div class="banana-jack jack-black trainer-terminal" data-node-key="FG_NEG" title="Function Generator (−) Ground (Connect to GND rail)">
+                    <span class="jack-rim"></span>
+                    <span class="jack-hole"></span>
+                    <span class="pin-status-dot" id="dot-FG_NEG"></span>
+                  </div>
+                  <span class="fg-term-caption">(−) GND</span>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -104,6 +166,7 @@ class BoardView {
 
     this.renderPowerRails();
     this.renderSwitches();
+    this.renderFuncGen();
     this.renderLEDs();
     this.renderSockets();
   }
@@ -195,6 +258,97 @@ class BoardView {
       this.wireManager.registerTerminal(`SW_${i}`, jack);
 
       swGrid.appendChild(swCard);
+    }
+  }
+
+  renderFuncGen() {
+    const fgPosJack = this.container.querySelector('[data-node-key="FG_POS"]');
+    const fgNegJack = this.container.querySelector('[data-node-key="FG_NEG"]');
+    if (fgPosJack) this.wireManager.registerTerminal('FG_POS', fgPosJack);
+    if (fgNegJack) this.wireManager.registerTerminal('FG_NEG', fgNegJack);
+
+    const btnPulse = this.container.querySelector('#btn-fg-pulse');
+    if (btnPulse) {
+      btnPulse.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.engine.pulseClock();
+        if (typeof window !== 'undefined' && window.app && window.app.playSound) {
+          window.app.playSound('toggle');
+        }
+      });
+    }
+
+    const btnRun = this.container.querySelector('#btn-fg-run');
+    if (btnRun) {
+      btnRun.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.toggleClockAutoRun();
+      });
+    }
+  }
+
+  toggleClockAutoRun() {
+    const btnRun = this.container.querySelector('#btn-fg-run');
+    const runDot = this.container.querySelector('#fg-run-dot');
+    const runLabel = this.container.querySelector('#fg-run-label');
+
+    if (this.clockInterval) {
+      this.stopClockAutoRun();
+    } else {
+      if (btnRun) btnRun.classList.add('running');
+      if (runDot) runDot.classList.add('active');
+      if (runLabel) runLabel.textContent = 'STOP';
+
+      this.clockInterval = setInterval(() => {
+        this.engine.pulseClock();
+      }, 1000);
+    }
+  }
+
+  stopClockAutoRun() {
+    if (this.clockInterval) {
+      clearInterval(this.clockInterval);
+      this.clockInterval = null;
+    }
+    const btnRun = this.container.querySelector('#btn-fg-run');
+    const runDot = this.container.querySelector('#fg-run-dot');
+    const runLabel = this.container.querySelector('#fg-run-label');
+    if (btnRun) btnRun.classList.remove('running');
+    if (runDot) runDot.classList.remove('active');
+    if (runLabel) runLabel.textContent = 'RUN';
+    this.engine.setClock(0);
+  }
+
+  updateFuncGenExperiment(exp) {
+    const panel = this.container.querySelector('#func-gen-panel');
+    const freqEl = this.container.querySelector('#fg-disp-freq');
+    const waveEl = this.container.querySelector('#fg-disp-wave');
+    const ampEl = this.container.querySelector('#fg-disp-amp');
+    const offsetEl = this.container.querySelector('#fg-disp-offset');
+    const pill = this.container.querySelector('#fg-status-pill');
+
+    if (!panel) return;
+
+    if (exp && exp.functionGenerator) {
+      panel.classList.remove('inactive');
+      if (freqEl) freqEl.textContent = exp.functionGenerator.frequency || '100 Hz';
+      if (waveEl) waveEl.textContent = exp.functionGenerator.waveform || 'SQUARE';
+      if (ampEl) ampEl.textContent = exp.functionGenerator.amplitude || '5.0 Vpp';
+      if (offsetEl) offsetEl.textContent = exp.functionGenerator.dcOffset || '+2.48 V';
+      if (pill) {
+        pill.textContent = 'ACTIVE';
+        pill.className = 'info-tag fg-status-pill active';
+      }
+    } else {
+      panel.classList.add('inactive');
+      if (freqEl) freqEl.textContent = 'STANDBY';
+      if (waveEl) waveEl.textContent = 'SQUARE';
+      if (ampEl) ampEl.textContent = '5.0 Vpp';
+      if (offsetEl) offsetEl.textContent = '+2.00 V';
+      if (pill) {
+        pill.textContent = 'STANDBY';
+        pill.className = 'info-tag fg-status-pill';
+      }
     }
   }
 
@@ -457,6 +611,33 @@ class BoardView {
           else dot.className = 'pin-status-dot val-float';
         }
       }
+    }
+
+    // 4. Update Function Generator visuals
+    const fgClkLed = this.container.querySelector('#fg-clk-led');
+    const fgClkVal = this.container.querySelector('#fg-clk-val');
+    const isHigh = !!this.engine.fgValue;
+    if (fgClkLed && fgClkVal) {
+      fgClkLed.className = `fg-clk-led ${isHigh ? 'lit-high' : 'lit-low'}`;
+      fgClkVal.textContent = isHigh ? 'HIGH (1)' : 'LOW (0)';
+      fgClkVal.className = `fg-clk-val ${isHigh ? 'high' : 'low'}`;
+    }
+
+    const dotPos = this.container.querySelector('#dot-FG_POS');
+    if (dotPos) {
+      const v = simResult.nodeValues['FG_POS'];
+      if (v === 1) dotPos.className = 'pin-status-dot val-high';
+      else if (v === 0) dotPos.className = 'pin-status-dot val-low';
+      else if (v === 'SHORT') dotPos.className = 'pin-status-dot val-short';
+      else dotPos.className = 'pin-status-dot val-float';
+    }
+
+    const dotNeg = this.container.querySelector('#dot-FG_NEG');
+    if (dotNeg) {
+      const v = simResult.nodeValues['FG_NEG'];
+      if (v === 0) dotNeg.className = 'pin-status-dot val-low';
+      else if (v === 'SHORT') dotNeg.className = 'pin-status-dot val-short';
+      else dotNeg.className = 'pin-status-dot val-float';
     }
   }
 }

@@ -999,13 +999,13 @@ const EXPERIMENTS = [
   },
 
   // ==========================================
-  // BONUS EXPERIMENT 6: Magnitude Comparator
+  // EXPERIMENT 6: Magnitude Comparator (from lab manual page 17)
   // ==========================================
   {
     id: 'exp6_comparator',
     expNum: 6,
     subMode: 'Comparator',
-    title: 'Bonus Exp 6: 4-Bit Magnitude Comparator (IC 7485)',
+    title: 'Exp 6: 4-Bit Magnitude Comparator (IC 7485)',
     aim: 'To verify the operation of a 4-bit Magnitude Comparator using IC 7485.',
     apparatus: [
       { name: 'IC 7485 (4-Bit Magnitude Comparator)', qty: 1 },
@@ -1067,6 +1067,972 @@ const EXPERIMENTS = [
       { from: 'IC_0_P5', to: 'LED_0', color: '#00e676' },
       { from: 'IC_0_P6', to: 'LED_1', color: '#ab47bc' },
       { from: 'IC_0_P7', to: 'LED_2', color: '#ff1744' }
+    ]
+  },
+
+  // ==========================================
+  // EXPERIMENT 7: Design and Verification of Flip-Flops
+  // ==========================================
+  // RS Flip-Flop using IC 7400 (NAND-based)
+  {
+    id: 'exp7_rs_ff',
+    expNum: 7,
+    subMode: 'RS_FF',
+    title: 'Exp 7: RS Flip-Flop using IC 7400 (NAND)',
+    aim: 'To design and construct an RS Flip-Flop using NAND gates (IC 7400) and verify its truth table.',
+    apparatus: [
+      { name: 'IC 7400', spec: 'Quad 2-Input NAND Gate', qty: 1 },
+      { name: 'Digital IC Trainer Kit', qty: 1 },
+      { name: 'Connecting Patch Cords', qty: 'As required' }
+    ],
+    theory: 'The SR (Set-Reset) Flip-Flop is the most basic memory element. When built from NAND gates, inputs are active LOW:\n• S=0, R=1 → Q=1 (Set state)\n• S=1, R=0 → Q=0 (Reset state)\n• S=1, R=1 → Q holds previous state (Memory / No Change)\n• S=0, R=0 → Forbidden state (Q = Q\' = 1, undefined)\n\nIC 7400 Gate 1 (Pins 1,2,3): NAND Gate for Q output.\nIC 7400 Gate 2 (Pins 4,5,6): NAND Gate for Q\' output.',
+    procedure: [
+      '1. Insert IC 7400 into Socket 1.',
+      '2. Connect Pin 14 to +5V (Vcc) and Pin 7 to GND.',
+      '3. RS FF using NAND: Connect SW 0 (S\') to Pin 1 and Pin 6. Connect SW 1 (R\') to Pin 4 and Pin 2.',
+      '4. Cross-couple: Connect Pin 3 (Q) to Pin 5; Connect Pin 6 (Q\') to Pin 2.',
+      '   NOTE: In simulation use SW 0 → Pin 1 and SW 1 → Pin 4 for S and R respectively.',
+      '5. Connect Pin 3 (Q output) to LED 0.',
+      '6. Connect Pin 6 (Q\' output) to LED 1.',
+      '7. Set SW 0=0 (S active), SW 1=1 (R inactive) → Q=1 (Set).',
+      '8. Set SW 0=1 (S inactive), SW 1=0 (R active) → Q=0 (Reset).',
+      '9. Set SW 0=1, SW 1=1 → Q holds (No Change / Memory).',
+      '10. Set SW 0=0, SW 1=0 → Forbidden state (avoid in practice).'
+    ],
+    requiredICs: ['7400'],
+    defaultSockets: [{ socketId: 0, partNumber: '7400' }],
+    inputs: [
+      { id: 0, label: "S' (SW 0, active LOW)", switchIndex: 0 },
+      { id: 1, label: "R' (SW 1, active LOW)", switchIndex: 1 }
+    ],
+    outputs: [
+      { id: 0, label: 'Q (LED 0)',   ledIndex: 0 },
+      { id: 1, label: "Q' (LED 1)",  ledIndex: 1 }
+    ],
+    truthTable: {
+      headers: ["S'", "R'", 'Q', "Q'", 'State'],
+      rows: [
+        { inputs: [0, 1], outputs: [1, 0] },  // Set: Q=1, Q'=0
+        { inputs: [1, 0], outputs: [0, 1] },  // Reset: Q=0, Q'=1
+        { inputs: [1, 1], outputs: [0, 1] },  // Hold (holds previous Reset state: Q=0, Q'=1)
+        { inputs: [0, 0], outputs: [1, 1] }   // Forbidden: Q=1, Q'=1
+      ]
+    },
+    referenceWiring: [
+      { from: 'VCC', to: 'IC_0_P14', color: '#e53935' },
+      { from: 'GND', to: 'IC_0_P7',  color: '#1e88e5' },
+      // S' → Gate 1 input A
+      { from: 'SW_0', to: 'IC_0_P1', color: '#fbc02d' },
+      // R' → Gate 2 input A
+      { from: 'SW_1', to: 'IC_0_P4', color: '#43a047' },
+      // Cross-couple: Q (P3) → Gate 2 input B (P5)
+      { from: 'IC_0_P3', to: 'IC_0_P5', color: '#ab47bc' },
+      // Cross-couple: Q' (P6) → Gate 1 input B (P2)
+      { from: 'IC_0_P6', to: 'IC_0_P2', color: '#00acc1' },
+      // Outputs to LEDs
+      { from: 'IC_0_P3', to: 'LED_0', color: '#4caf50' },
+      { from: 'IC_0_P6', to: 'LED_1', color: '#ff7043' }
+    ]
+  },
+
+  // D Flip-Flop using IC 7474
+  {
+    id: 'exp7_d_ff',
+    expNum: 7,
+    subMode: 'D_FF',
+    title: 'Exp 7: D Flip-Flop using IC 7474',
+    aim: 'To design and construct a D Flip-Flop using IC 7474 and verify its truth table.',
+    apparatus: [
+      { name: 'IC 7474', spec: 'Dual D-Type Positive Edge Triggered Flip-Flop', qty: 1 },
+      { name: 'Digital IC Trainer Kit', qty: 1 },
+      { name: 'Function Generator Probe', qty: 1 },
+      { name: 'Connecting Patch Cords', qty: 'As required' }
+    ],
+    theory: 'The D Flip-Flop (Data / Delay Flip-Flop) transfers the value at the D input to the Q output on the rising edge of the clock pulse.\n• CLK↑ → Q = D (output tracks input only on clock edge)\n• PRE = 0 (active LOW): Forces Q = 1 asynchronously\n• CLR = 0 (active LOW): Forces Q = 0 asynchronously\n• When both PRE and CLR are HIGH (inactive), Q latches D on each rising clock edge.\n\nIC 7474 Flip-Flop 1 Pins:\n  CLR=Pin1, D=Pin2, CLK=Pin3, PRE=Pin4, Q=Pin5, Q\'=Pin6',
+    procedure: [
+      '1. Insert IC 7474 into Socket 1.',
+      '2. Connect Pin 14 (VCC) to +5V and Pin 7 (GND) to GND.',
+      '3. Connect Pin 4 (1PRE) to +5V (Vcc) — inactive HIGH.',
+      '4. Connect Pin 1 (1CLR) to +5V (Vcc) — inactive HIGH.',
+      '5. CLOCK (CLK): Connect Function Generator (+) to Pin 3 (1CLK) and Function Generator (−) to GND.',
+      '   Function Generator Settings: Frequency = 100 Hz, Amplitude = 5V p-p, DC Offset = 2.48V, Waveform = Square.',
+      '   In the simulator: Connect SW 0 to Pin 3 (toggling SW 0 simulates one clock pulse).',
+      '6. Connect Switch 1 (D input) to Pin 2 (1D).',
+      '7. Connect Pin 5 (1Q) to LED 0 and Pin 6 (1Q\') to LED 1.',
+      '8. Set D = SW 1 and toggle CLK (SW 0) to observe Q = D on clock edge.'
+    ],
+    requiredICs: ['7474'],
+    defaultSockets: [{ socketId: 0, partNumber: '7474' }],
+    functionGenerator: {
+      pin: 3,
+      socketId: 0,
+      frequency: '100 Hz',
+      amplitude: '5V p-p',
+      dcOffset: '2.48V',
+      waveform: 'Square',
+      positive: 'IC_0_P3 (1CLK)',
+      negative: 'GND'
+    },
+    inputs: [
+      { id: 0, label: 'CLK (SW 0 / Fn.Gen)', switchIndex: 0 },
+      { id: 1, label: 'D (SW 1)',             switchIndex: 1 }
+    ],
+    outputs: [
+      { id: 0, label: 'Q (LED 0)',   ledIndex: 0 },
+      { id: 1, label: "Q' (LED 1)", ledIndex: 1 }
+    ],
+    truthTable: {
+      headers: ['CLK', 'D', 'Q', "Q'"],
+      rows: [
+        { inputs: [1, 0], outputs: [0, 1] },
+        { inputs: [1, 1], outputs: [1, 0] }
+      ]
+    },
+    referenceWiring: [
+      { from: 'VCC', to: 'IC_0_P14', color: '#e53935' },
+      { from: 'GND', to: 'IC_0_P7',  color: '#1e88e5' },
+      // PRE and CLR tied HIGH (inactive)
+      { from: 'VCC', to: 'IC_0_P4',  color: '#e53935' },
+      { from: 'VCC', to: 'IC_0_P1',  color: '#e53935' },
+      // CLK = SW 0 (simulates function generator clock)
+      { from: 'SW_0', to: 'IC_0_P3', color: '#ff7043' },
+      // D = SW 1
+      { from: 'SW_1', to: 'IC_0_P2', color: '#fbc02d' },
+      // Outputs
+      { from: 'IC_0_P5', to: 'LED_0', color: '#4caf50' },
+      { from: 'IC_0_P6', to: 'LED_1', color: '#ab47bc' }
+    ]
+  },
+
+  // JK Flip-Flop using IC 7476
+  {
+    id: 'exp7_jk_ff',
+    expNum: 7,
+    subMode: 'JK_FF',
+    title: 'Exp 7: JK Flip-Flop using IC 7476',
+    aim: 'To design and construct a JK Flip-Flop using IC 7476 and verify its truth table.',
+    apparatus: [
+      { name: 'IC 7476', spec: 'Dual JK Master-Slave Flip-Flop', qty: 1 },
+      { name: 'Digital IC Trainer Kit', qty: 1 },
+      { name: 'Function Generator Probe', qty: 1 },
+      { name: 'Connecting Patch Cords', qty: 'As required' }
+    ],
+    theory: 'The JK Flip-Flop eliminates the undefined state of the RS flip-flop.\n• J=0, K=0, CLK → Q holds (No Change)\n• J=0, K=1, CLK → Q = 0 (Reset)\n• J=1, K=0, CLK → Q = 1 (Set)\n• J=1, K=1, CLK → Q = Q\' (Toggle)\n\nIC 7476 Flip-Flop 1: CLK=Pin1, PRE=Pin2(active LOW), CLR=Pin3(active LOW), J=Pin4, Q=Pin6, Q\'=Pin7, K=Pin8.\nVCC = Pin 5, GND = Pin 13.',
+    procedure: [
+      '1. Insert IC 7476 into Socket 1.',
+      '2. Connect Pin 5 (VCC) to +5V and Pin 13 (GND) to GND.',
+      '3. Connect Pin 2 (1PRE) and Pin 3 (1CLR) to +5V (Vcc) — both inactive HIGH.',
+      '4. CLOCK (CLK): Connect Function Generator (+) to Pin 1 (1CLK) and Function Generator (−) to GND.',
+      '   Function Generator Settings: Frequency = 100 Hz, Amplitude = 5V p-p, DC Offset = 2.48V, Waveform = Square.',
+      '   In the simulator: Connect SW 0 to Pin 1 (1CLK).',
+      '5. Connect Switch 1 (J input) to Pin 4 (1J).',
+      '6. Connect Switch 2 (K input) to Pin 8 (1K).',
+      '7. Connect Pin 6 (1Q) to LED 0 and Pin 7 (1Q\') to LED 1.',
+      '8. Verify all four JK combinations (00, 01, 10, 11) while clocking.'
+    ],
+    requiredICs: ['7476'],
+    defaultSockets: [{ socketId: 0, partNumber: '7476' }],
+    functionGenerator: {
+      pin: 1,
+      socketId: 0,
+      frequency: '100 Hz',
+      amplitude: '5V p-p',
+      dcOffset: '2.48V',
+      waveform: 'Square',
+      positive: 'IC_0_P1 (1CLK)',
+      negative: 'GND'
+    },
+    inputs: [
+      { id: 0, label: 'CLK (Fn.Gen / SW 0)', switchIndex: 0 },
+      { id: 1, label: 'J (SW 1)',             switchIndex: 1 },
+      { id: 2, label: 'K (SW 2)',             switchIndex: 2 }
+    ],
+    outputs: [
+      { id: 0, label: 'Q (LED 0)',   ledIndex: 0 },
+      { id: 1, label: "Q' (LED 1)", ledIndex: 1 }
+    ],
+    truthTable: {
+      headers: ['CLK', 'J', 'K', 'Q (next)', "Q' (next)"],
+      rows: [
+        { inputs: [1, 0, 1], outputs: [0, 1] },  // Reset
+        { inputs: [1, 0, 0], outputs: [0, 1] },  // Hold (0)
+        { inputs: [1, 1, 0], outputs: [1, 0] },  // Set
+        { inputs: [1, 0, 0], outputs: [1, 0] },  // Hold (1)
+        { inputs: [1, 1, 1], outputs: [0, 1] },  // Toggle (1→0)
+        { inputs: [1, 1, 1], outputs: [1, 0] }   // Toggle (0→1)
+      ]
+    },
+    referenceWiring: [
+      // VCC = Pin 5, GND = Pin 13 for 7476
+      { from: 'VCC_0', to: 'IC_0_P5',  color: '#e53935' },
+      { from: 'GND_0', to: 'IC_0_P13', color: '#1e88e5' },
+      // PRE and CLR tied HIGH (inactive)
+      { from: 'VCC_1', to: 'IC_0_P2', color: '#e53935' },
+      { from: 'VCC_2', to: 'IC_0_P3', color: '#e53935' },
+      // Function Generator Clock: (+) -> Pin 1, (-) -> GND
+      { from: 'FG_POS', to: 'IC_0_P1',  color: '#ff7043' },
+      { from: 'FG_NEG', to: 'GND_1',    color: '#1e88e5' },
+      // J = SW 1
+      { from: 'SW_1', to: 'IC_0_P4',  color: '#fbc02d' },
+      // K = SW 2 (Pin 16 in TI 7476 / SRM Manual)
+      { from: 'SW_2', to: 'IC_0_P16', color: '#43a047' },
+      // Outputs: Pin 15 (1Q), Pin 14 (1Q')
+      { from: 'IC_0_P15', to: 'LED_0', color: '#4caf50' },
+      { from: 'IC_0_P14', to: 'LED_1', color: '#ab47bc' }
+    ]
+  },
+
+  // T Flip-Flop using IC 7476 (JK with J=K=1)
+  {
+    id: 'exp7_t_ff',
+    expNum: 7,
+    subMode: 'T_FF',
+    title: 'Exp 7: T Flip-Flop using IC 7476 (JK with J=K=Vcc)',
+    aim: 'To construct a T (Toggle) Flip-Flop from IC 7476 by tying J = K = 1 and verify its toggle behavior.',
+    apparatus: [
+      { name: 'IC 7476', spec: 'Dual JK Master-Slave Flip-Flop', qty: 1 },
+      { name: 'Digital IC Trainer Kit', qty: 1 },
+      { name: 'Function Generator Probe', qty: 1 },
+      { name: 'Connecting Patch Cords', qty: 'As required' }
+    ],
+    theory: 'A T Flip-Flop is obtained from a JK Flip-Flop by permanently tying both J and K inputs HIGH (to Vcc = logic 1).\n• With J = K = 1, on every active clock edge: Q toggles (flips).\n• Q(next) = Q\'(present)\nThis makes it useful as a frequency divider: the Q output is exactly half the input clock frequency.\nIC 7476 Flip-Flop 1: CLK=Pin1, PRE=Pin2(active LOW), CLR=Pin3(active LOW), J=Pin4 → Vcc, Q=Pin15, Q\'=Pin14, K=Pin16 → Vcc.',
+    procedure: [
+      '1. Insert IC 7476 into Socket 1.',
+      '2. Connect Pin 5 (VCC) to +5V and Pin 13 (GND) to GND.',
+      '3. Connect Pin 2 (1PRE) and Pin 3 (1CLR) to +5V (inactive HIGH).',
+      '4. Connect J (Pin 4) to +5V and K (Pin 16) to +5V — tie both inputs HIGH permanently.',
+      '5. CLOCK (CLK): Connect Function Generator (+) to Pin 1 (1CLK) and Function Generator (−) to GND.',
+      '   Function Generator Settings: Frequency = 100 Hz, Amplitude = 5V p-p, DC Offset = 2.48V, Waveform = Square.',
+      '   In the simulator: Connect FG_POS to Pin 1 (1CLK) and FG_NEG to GND.',
+      '6. Connect Pin 15 (1Q) to LED 0 and Pin 14 (1Q\') to LED 1.',
+      '7. Toggle clock repeatedly and observe LED 0 changing state each time — confirming toggle behavior.'
+    ],
+    requiredICs: ['7476'],
+    defaultSockets: [{ socketId: 0, partNumber: '7476' }],
+    functionGenerator: {
+      pin: 1,
+      socketId: 0,
+      frequency: '100 Hz',
+      amplitude: '5V p-p',
+      dcOffset: '2.48V',
+      waveform: 'Square',
+      positive: 'IC_0_P1 (1CLK)',
+      negative: 'GND'
+    },
+    inputs: [
+      { id: 0, label: 'CLK (Fn.Gen / SW 0)', switchIndex: 0 }
+    ],
+    outputs: [
+      { id: 0, label: 'Q (LED 0)',   ledIndex: 0 },
+      { id: 1, label: "Q' (LED 1)", ledIndex: 1 }
+    ],
+    truthTable: {
+      headers: ['CLK', 'J (tied 1)', 'K (tied 1)', 'Q (next)', "Q' (next)"],
+      rows: [
+        { inputs: [1], outputs: [1, 0] },  // Toggle: 0→1
+        { inputs: [1], outputs: [0, 1] },  // Toggle: 1→0
+        { inputs: [1], outputs: [1, 0] }   // Toggle: 0→1
+      ]
+    },
+    referenceWiring: [
+      { from: 'VCC_0', to: 'IC_0_P5',  color: '#e53935' },
+      { from: 'GND_0', to: 'IC_0_P13', color: '#1e88e5' },
+      // PRE, CLR, J, K → all HIGH
+      { from: 'VCC_1', to: 'IC_0_P2',  color: '#e53935' },
+      { from: 'VCC_2', to: 'IC_0_P3',  color: '#e53935' },
+      { from: 'VCC_3', to: 'IC_0_P4',  color: '#e53935' },  // J = 1
+      { from: 'VCC_4', to: 'IC_0_P16', color: '#e53935' },  // K = 1
+      // Function Generator Clock: (+) -> Pin 1, (-) -> GND
+      { from: 'FG_POS', to: 'IC_0_P1', color: '#ff7043' },
+      { from: 'FG_NEG', to: 'GND_1',   color: '#1e88e5' },
+      // Outputs
+      { from: 'IC_0_P15', to: 'LED_0', color: '#4caf50' },
+      { from: 'IC_0_P14', to: 'LED_1', color: '#ab47bc' }
+    ]
+  },
+
+  // ==========================================
+  // EXPERIMENT 8: Johnson and Ring Counters
+  // ==========================================
+  {
+    id: 'exp8_ring_counter',
+    expNum: 8,
+    subMode: 'RingCounter',
+    title: 'Exp 8: 3-Bit Ring Counter using IC 7474',
+    aim: 'To design and verify the truth table of a 3-bit Ring Counter using IC 7474.',
+    apparatus: [
+      { name: 'IC 7474', spec: 'Dual D-Type Positive Edge Triggered Flip-Flop', qty: 2 },
+      { name: 'Digital IC Trainer Kit', qty: 1 },
+      { name: 'Function Generator Probe', qty: 1 },
+      { name: 'Connecting Patch Cords', qty: 'As required' }
+    ],
+    theory: 'A Ring Counter is a circular shift register where the output of the last flip-flop feeds back as input to the first flip-flop. Only one flip-flop is HIGH (1) at any time, and this logic 1 circulates around the ring.\n\nFor a 3-bit ring counter using three D Flip-Flops:\n• Clock 0: Q2 Q1 Q0 = 0 0 1 (Initial state initialized with Q0=1)\n• Clock 1: Q2 Q1 Q0 = 0 1 0\n• Clock 2: Q2 Q1 Q0 = 1 0 0\n• Clock 3: Q2 Q1 Q0 = 0 0 1 (repeats)\n\nAll flip-flops share the same CLK. The Q output of FF(n) is connected to D input of FF(n+1). Last FF Q output connects back to FF0 D input.',
+    procedure: [
+      '1. Insert two IC 7474 ICs (Socket 1 and Socket 2).',
+      '2. Connect VCC (Pin 14) and GND (Pin 7) for both ICs.',
+      '3. CLOCK: Connect Function Generator (+) to Pin 3 (1CLK) of IC1, Pin 11 (2CLK) of IC1, and Pin 3 (1CLK) of IC2. Connect Function Generator (−) to GND.',
+      '   Function Generator Settings: Frequency = 100 Hz, Amplitude = 5V p-p, DC Offset = 2.48V, Waveform = Square.',
+      '   In the simulator: Connect FG_POS to all three CLK pins, and FG_NEG to GND.',
+      '4. All PRE and CLR pins tie to Vcc (inactive). FF0 is preset so Q0 starts at 1.',
+      '5. Connect Q0 (IC1 P5) → D1 (IC1 P12). Connect Q1 (IC1 P9) → D2 (IC2 P2). Connect Q2 (IC2 P5) → D0 (IC1 P2) — ring feedback.',
+      '6. Connect Q0 → LED 0, Q1 → LED 1, Q2 → LED 2.',
+      '7. Apply clock pulses and verify LEDs cycle: 100 → 010 → 001 → 100...'
+    ],
+    requiredICs: ['7474', '7474'],
+    defaultSockets: [
+      { socketId: 0, partNumber: '7474' },
+      { socketId: 1, partNumber: '7474' }
+    ],
+    initialState: {
+      0: { q1: 1, q2: 0 },
+      1: { q1: 0 }
+    },
+    functionGenerator: {
+      frequency: '100 Hz',
+      amplitude: '5V p-p',
+      dcOffset: '2.48V',
+      waveform: 'Square',
+      positive: 'IC_0_P3 (CLK — all FF clock pins tied together)',
+      negative: 'GND'
+    },
+    inputs: [
+      { id: 0, label: 'CLK (Fn.Gen / SW 0)', switchIndex: 0 }
+    ],
+    outputs: [
+      { id: 0, label: 'Q0 (LED 0)', ledIndex: 0 },
+      { id: 1, label: 'Q1 (LED 1)', ledIndex: 1 },
+      { id: 2, label: 'Q2 (LED 2)', ledIndex: 2 }
+    ],
+    truthTable: {
+      headers: ['CLK Pulse', 'Q0', 'Q1', 'Q2'],
+      rows: [
+        { inputs: [0], outputs: [1, 0, 0] },  // Initial state (Q0=1)
+        { inputs: [1], outputs: [0, 1, 0] },  // Pulse 1: Q1=1
+        { inputs: [2], outputs: [0, 0, 1] },  // Pulse 2: Q2=1
+        { inputs: [3], outputs: [1, 0, 0] }   // Pulse 3: repeats
+      ]
+    },
+    referenceWiring: [
+      // IC1 (Socket 0) = FF0 and FF1
+      { from: 'VCC', to: 'IC_0_P14', color: '#e53935' },
+      { from: 'GND', to: 'IC_0_P7',  color: '#1e88e5' },
+      // IC2 (Socket 1) = FF2
+      { from: 'VCC_1', to: 'IC_1_P14', color: '#e53935' },
+      { from: 'GND_1', to: 'IC_1_P7',  color: '#1e88e5' },
+      // All PRE / CLR inactive (tied HIGH)
+      { from: 'VCC_2', to: 'IC_0_P4',  color: '#e53935' },
+      { from: 'VCC_3', to: 'IC_0_P1',  color: '#e53935' },
+      { from: 'VCC_4', to: 'IC_0_P10', color: '#e53935' },
+      { from: 'VCC_5', to: 'IC_0_P13', color: '#e53935' },
+      { from: 'VCC_6', to: 'IC_1_P4',  color: '#e53935' },
+      { from: 'VCC_7', to: 'IC_1_P1',  color: '#e53935' },
+      // Function Generator Clock: (+) -> all three FF clocks, (-) -> GND
+      { from: 'FG_POS', to: 'IC_0_P3',  color: '#ff7043' },
+      { from: 'FG_POS', to: 'IC_0_P11', color: '#ff7043' },
+      { from: 'FG_POS', to: 'IC_1_P3',  color: '#ff7043' },
+      { from: 'FG_NEG', to: 'GND_2',    color: '#1e88e5' },
+      // Ring feedback: Q0 (IC0 P5) → D1 (IC0 P12), Q1 (IC0 P9) → D2 (IC1 P2), Q2 (IC1 P5) → D0 (IC0 P2)
+      { from: 'IC_0_P5', to: 'IC_0_P12', color: '#fbc02d' },
+      { from: 'IC_0_P9', to: 'IC_1_P2',  color: '#43a047' },
+      { from: 'IC_1_P5', to: 'IC_0_P2',  color: '#29b6f6' },
+      // Outputs to LEDs
+      { from: 'IC_0_P5', to: 'LED_0', color: '#4caf50' },
+      { from: 'IC_0_P9', to: 'LED_1', color: '#ab47bc' },
+      { from: 'IC_1_P5', to: 'LED_2', color: '#ffa726' }
+    ]
+  },
+
+  {
+    id: 'exp8_johnson_counter',
+    expNum: 8,
+    subMode: 'JohnsonCounter',
+    title: 'Exp 8: 3-Bit Johnson Counter using IC 7474',
+    aim: 'To design and verify the truth table of a 3-bit Johnson (Switch-Tail Ring) Counter using IC 7474.',
+    apparatus: [
+      { name: 'IC 7474', spec: 'Dual D-Type Positive Edge Triggered Flip-Flop', qty: 2 },
+      { name: 'Digital IC Trainer Kit', qty: 1 },
+      { name: 'Function Generator Probe', qty: 1 },
+      { name: 'Connecting Patch Cords', qty: 'As required' }
+    ],
+    theory: 'A Johnson Counter (Twisted Ring / Mobius Counter) is a modified ring counter where the COMPLEMENT output Q\' of the last flip-flop is fed back to the D input of the first flip-flop.\n\nFor a 3-bit Johnson Counter:\n• State 0 (CLK 0): Q0 Q1 Q2 = 0 0 0\n• State 1 (CLK 1): Q0 Q1 Q2 = 1 0 0\n• State 2 (CLK 2): Q0 Q1 Q2 = 1 1 0\n• State 3 (CLK 3): Q0 Q1 Q2 = 1 1 1\n• State 4 (CLK 4): Q0 Q1 Q2 = 0 1 1\n• State 5 (CLK 5): Q0 Q1 Q2 = 0 0 1\n• Then back to 0 0 0 (cycle length = 2N = 6).\n\nKey difference from ring counter: Q\'(last) → D(first) instead of Q(last) → D(first).',
+    procedure: [
+      '1. Insert two IC 7474 ICs (Socket 1 and Socket 2).',
+      '2. Connect VCC (Pin 14) and GND (Pin 7) for both ICs.',
+      '3. CLOCK: Connect Function Generator (+) to all CLK pins. Connect Function Generator (−) to GND.',
+      '   Function Generator Settings: Frequency = 100 Hz, Amplitude = 5V p-p, DC Offset = 2.48V, Waveform = Square.',
+      '   In the simulator: Connect FG_POS to all CLK pins, and FG_NEG to GND.',
+      '4. All PRE and CLR → Vcc (inactive). All FFs clear to 0 initially.',
+      '5. Connect Q0 → D1 (IC1 P5→IC1 P12), Q1 → D2 (IC1 P9→IC2 P2).',
+      '6. TWIST: Connect Q2\' (IC2 Pin 6) → D0 (IC1 Pin 2) — this is the Johnson counter twist.',
+      '7. Connect Q0→LED0, Q1→LED1, Q2→LED2.',
+      '8. Apply clock pulses and verify: 000→100→110→111→011→001→000.'
+    ],
+    requiredICs: ['7474', '7474'],
+    defaultSockets: [
+      { socketId: 0, partNumber: '7474' },
+      { socketId: 1, partNumber: '7474' }
+    ],
+    initialState: {
+      0: { q1: 0, q2: 0 },
+      1: { q1: 0 }
+    },
+    functionGenerator: {
+      frequency: '100 Hz',
+      amplitude: '5V p-p',
+      dcOffset: '2.48V',
+      waveform: 'Square',
+      positive: 'IC_0_P3 (CLK — all FF clock pins tied together)',
+      negative: 'GND'
+    },
+    inputs: [
+      { id: 0, label: 'CLK (Fn.Gen / SW 0)', switchIndex: 0 }
+    ],
+    outputs: [
+      { id: 0, label: 'Q0 (LED 0)', ledIndex: 0 },
+      { id: 1, label: 'Q1 (LED 1)', ledIndex: 1 },
+      { id: 2, label: 'Q2 (LED 2)', ledIndex: 2 }
+    ],
+    truthTable: {
+      headers: ['CLK Pulse', 'Q0', 'Q1', 'Q2'],
+      rows: [
+        { inputs: [0], outputs: [0, 0, 0] },
+        { inputs: [1], outputs: [1, 0, 0] },
+        { inputs: [2], outputs: [1, 1, 0] },
+        { inputs: [3], outputs: [1, 1, 1] },
+        { inputs: [4], outputs: [0, 1, 1] },
+        { inputs: [5], outputs: [0, 0, 1] },
+        { inputs: [6], outputs: [0, 0, 0] }
+      ]
+    },
+    referenceWiring: [
+      { from: 'VCC',   to: 'IC_0_P14', color: '#e53935' },
+      { from: 'GND',   to: 'IC_0_P7',  color: '#1e88e5' },
+      { from: 'VCC_1', to: 'IC_1_P14', color: '#e53935' },
+      { from: 'GND_1', to: 'IC_1_P7',  color: '#1e88e5' },
+      // PRE / CLR inactive
+      { from: 'VCC_2', to: 'IC_0_P4',  color: '#e53935' },
+      { from: 'VCC_3', to: 'IC_0_P1',  color: '#e53935' },
+      { from: 'VCC_4', to: 'IC_0_P10', color: '#e53935' },
+      { from: 'VCC_5', to: 'IC_0_P13', color: '#e53935' },
+      { from: 'VCC_6', to: 'IC_1_P4',  color: '#e53935' },
+      { from: 'VCC_7', to: 'IC_1_P1',  color: '#e53935' },
+      // Shared CLK from Function Generator
+      { from: 'FG_POS', to: 'IC_0_P3',  color: '#ff7043' },
+      { from: 'FG_POS', to: 'IC_0_P11', color: '#ff7043' },
+      { from: 'FG_POS', to: 'IC_1_P3',  color: '#ff7043' },
+      { from: 'FG_NEG', to: 'GND_2',    color: '#1e88e5' },
+      // Shift chain: Q0→D1, Q1→D2
+      { from: 'IC_0_P5', to: 'IC_0_P12', color: '#fbc02d' },
+      { from: 'IC_0_P9', to: 'IC_1_P2',  color: '#43a047' },
+      // TWIST: Q2' (IC1 P6) → D0 (IC0 P2)
+      { from: 'IC_1_P6', to: 'IC_0_P2',  color: '#f06292' },
+      // Outputs
+      { from: 'IC_0_P5', to: 'LED_0', color: '#4caf50' },
+      { from: 'IC_0_P9', to: 'LED_1', color: '#ab47bc' },
+      { from: 'IC_1_P5', to: 'LED_2', color: '#ffa726' }
+    ]
+  },
+
+  // ==========================================
+  // EXPERIMENT 9: 3-Bit Synchronous Counter
+  // ==========================================
+  {
+    id: 'exp9_sync_counter',
+    expNum: 9,
+    subMode: 'SyncCounter',
+    title: 'Exp 9: 3-Bit Synchronous Counter (IC 7476 + IC 7408)',
+    aim: 'To design and construct a 3-bit Synchronous Counter using IC 7476 (JK flip-flops) and IC 7408 (AND gate), and verify its truth table.',
+    apparatus: [
+      { name: 'IC 7476', spec: 'Dual JK Master-Slave Flip-Flop', qty: 2 },
+      { name: 'IC 7408', spec: 'Quad 2-Input AND Gate', qty: 1 },
+      { name: 'Digital IC Trainer Kit', qty: 1 },
+      { name: 'Function Generator Probe', qty: 1 },
+      { name: 'Connecting Patch Cords', qty: 'As required' }
+    ],
+    theory: 'In a synchronous counter, all flip-flops share the same clock signal and change state simultaneously. This eliminates the propagation delay glitches seen in ripple (asynchronous) counters.\n\nFor a 3-bit binary synchronous UP counter using JK flip-flops:\n• FF0 (LSB QA): J0 = K0 = 1 (always toggles on every CLK)\n• FF1 (QB): J1 = K1 = QA (toggles only when QA = 1)\n• FF2 (MSB QC): J2 = K2 = QA · QB (toggles when both QA=1 AND QB=1)\n\nThe AND gate computes QA · QB for the MSB flip-flop.\n\nIC 7476 VCC = Pin 5, GND = Pin 13.\nIC 7408 VCC = Pin 14, GND = Pin 7.',
+    procedure: [
+      '1. Insert IC 7476 (Socket 1), second IC 7476 (Socket 2), and IC 7408 (Socket 3).',
+      '2. Connect Pin 5 to VCC and Pin 13 to GND for both 7476 ICs.',
+      '3. Connect Pin 14 to VCC and Pin 7 to GND for IC 7408.',
+      '4. All PRE and CLR pins of all JK FFs connect to +5V (inactive HIGH).',
+      '5. CLOCK: Connect Function Generator (+) to Pin 1 (1CLK) of IC1-7476, Pin 15 (2CLK) of IC1-7476, and Pin 1 (1CLK) of IC2-7476. Connect Function Generator (−) to GND.',
+      '   Function Generator Settings: Frequency = 1 Hz, Amplitude = 5V p-p, DC Offset = 2V, Waveform = Square.',
+      '   In the simulator: Connect SW 0 to all three CLK pins.',
+      '6. FF-A (IC1 FF1): J=K=Vcc. QA = Pin 6. CLK = Pin 1.',
+      '7. FF-B (IC1 FF2): J=K=QA (Pin 6 of FF-A → Pin 11 and Pin 12 of IC1). QB = Pin 9. CLK = Pin 15.',
+      '8. For FF-C (IC2 FF1): J=K = AND(QA,QB). Connect QA (IC1 P6) → AND Gate Pin1, QB (IC1 P9) → AND Gate Pin2. AND output (Pin3) → IC2 J (Pin4) and IC2 K (Pin8).',
+      '9. Connect QA→LED0, QB→LED1, QC→LED2.',
+      '10. Apply clock pulses; counter should count 000→001→010→011→100→101→110→111→000.'
+    ],
+    requiredICs: ['7476', '7476', '7408'],
+    defaultSockets: [
+      { socketId: 0, partNumber: '7476' },
+      { socketId: 1, partNumber: '7476' },
+      { socketId: 2, partNumber: '7408' }
+    ],
+    functionGenerator: {
+      frequency: '1 Hz',
+      amplitude: '5V p-p',
+      dcOffset: '2V',
+      waveform: 'Square',
+      positive: 'IC_0_P1 (1CLK of FF-A — all CLK pins tied together)',
+      negative: 'GND'
+    },
+    inputs: [
+      { id: 0, label: 'CLK (Fn.Gen / SW 0)', switchIndex: 0 }
+    ],
+    outputs: [
+      { id: 0, label: 'QA (LED 0)', ledIndex: 0 },
+      { id: 1, label: 'QB (LED 1)', ledIndex: 1 },
+      { id: 2, label: 'QC (LED 2)', ledIndex: 2 }
+    ],
+    truthTable: {
+      headers: ['CLK Pulse', 'QA', 'QB', 'QC'],
+      rows: [
+        { inputs: [0], outputs: [0, 0, 0] },
+        { inputs: [1], outputs: [1, 0, 0] },
+        { inputs: [2], outputs: [0, 1, 0] },
+        { inputs: [3], outputs: [1, 1, 0] },
+        { inputs: [4], outputs: [0, 0, 1] },
+        { inputs: [5], outputs: [1, 0, 1] },
+        { inputs: [6], outputs: [0, 1, 1] },
+        { inputs: [7], outputs: [1, 1, 1] },
+        { inputs: [8], outputs: [0, 0, 0] }
+      ]
+    },
+    referenceWiring: [
+      // IC1 7476 (Socket 0): VCC=P5, GND=P13
+      { from: 'VCC_0', to: 'IC_0_P5',  color: '#e53935' },
+      { from: 'GND_0', to: 'IC_0_P13', color: '#1e88e5' },
+      // IC2 7476 (Socket 1): VCC=P5, GND=P13
+      { from: 'VCC_1', to: 'IC_1_P5',  color: '#e53935' },
+      { from: 'GND_1', to: 'IC_1_P13', color: '#1e88e5' },
+      // IC3 7408 (Socket 2): VCC=P14, GND=P7
+      { from: 'VCC_2', to: 'IC_2_P14', color: '#e53935' },
+      { from: 'GND_2', to: 'IC_2_P7',  color: '#1e88e5' },
+      // All PRE/CLR inactive (tied to Vcc)
+      { from: 'VCC_3', to: 'IC_0_P2',  color: '#e53935' },
+      { from: 'VCC_4', to: 'IC_0_P3',  color: '#e53935' },
+      { from: 'VCC_5', to: 'IC_0_P7',  color: '#e53935' },
+      { from: 'VCC_6', to: 'IC_0_P8',  color: '#e53935' },
+      { from: 'VCC_7', to: 'IC_1_P2',  color: '#e53935' },
+      { from: 'VCC',   to: 'IC_1_P3',  color: '#e53935' },
+      // Function Generator Clock: (+) -> IC0 P1, IC0 P6, IC1 P1; (-) -> GND
+      { from: 'FG_POS', to: 'IC_0_P1', color: '#ff7043' },
+      { from: 'FG_POS', to: 'IC_0_P6', color: '#ff7043' },
+      { from: 'FG_POS', to: 'IC_1_P1', color: '#ff7043' },
+      { from: 'FG_NEG', to: 'GND_3',   color: '#1e88e5' },
+      // FF-A: J=K=Vcc (always toggles)
+      { from: 'VCC',  to: 'IC_0_P4',   color: '#e53935' },
+      { from: 'VCC',  to: 'IC_0_P16',  color: '#e53935' },
+      // FF-B: J=K=QA (IC0 P15 → IC0 P9 and P12)
+      { from: 'IC_0_P15', to: 'IC_0_P9',  color: '#fbc02d' },
+      { from: 'IC_0_P15', to: 'IC_0_P12', color: '#fbc02d' },
+      // AND Gate: QA·QB → J,K of FF-C
+      { from: 'IC_0_P15', to: 'IC_2_P1', color: '#fbc02d' },
+      { from: 'IC_0_P11', to: 'IC_2_P2', color: '#43a047' },
+      { from: 'IC_2_P3',  to: 'IC_1_P4', color: '#ab47bc' },
+      { from: 'IC_2_P3',  to: 'IC_1_P16', color: '#ab47bc' },
+      // Outputs
+      { from: 'IC_0_P15', to: 'LED_0', color: '#4caf50' },
+      { from: 'IC_0_P11', to: 'LED_1', color: '#29b6f6' },
+      { from: 'IC_1_P15', to: 'LED_2', color: '#ffa726' }
+    ]
+  },
+
+  // ==========================================
+  // EXPERIMENT 10: Decade Counter using IC 7490
+  // ==========================================
+  {
+    id: 'exp10_decade_counter',
+    expNum: 10,
+    subMode: 'DecadeCounter',
+    title: 'Exp 10: Decade Counter using IC 7490 (74LS90)',
+    aim: 'To construct and verify the working of a BCD Decade Counter using IC 7490.',
+    apparatus: [
+      { name: 'IC 7490', spec: 'Decade Counter (Divide-by-2 and Divide-by-5)', qty: 1 },
+      { name: 'Digital IC Trainer Kit', qty: 1 },
+      { name: 'Connecting Patch Cords', qty: 'As required' }
+    ],
+    theory: 'The IC 7490 is a monolithic decade counter consisting of four master-slave flip-flops. It counts from 0 to 9 (BCD) and then resets to 0 on the next clock pulse.\n\nIC 7490 Pinout:\n• VCC = Pin 5, GND = Pin 10\n• CKA (CLK A) = Pin 14, CKB (CLK B) = Pin 1\n• QA = Pin 12, QB = Pin 9, QC = Pin 8, QD = Pin 11\n• R0(1)=Pin2, R0(2)=Pin3: Both HIGH → resets count to 0000\n• R9(1)=Pin6, R9(2)=Pin7: Both HIGH → resets count to 1001 (decimal 9)\n\nFor a BCD decade count: Connect QA output (Pin 12) externally to CKB (Pin 1). Apply 1 Hz clock to CKA (Pin 14). Tie both reset pins R0(1) and R0(2) to GND for normal counting.',
+    procedure: [
+      '1. Insert IC 7490 into Socket 1.',
+      '2. Connect Pin 5 (VCC) to +5V and Pin 10 (GND) to GND.',
+      '3. Connect Reset pins: R0(1)=Pin2 → GND, R0(2)=Pin3 → GND (disable reset-to-0).',
+      '4. Connect R9(1)=Pin6 → GND, R9(2)=Pin7 → GND (disable reset-to-9).',
+      '5. For BCD counting: Connect QA (Pin 12) → CKB (Pin 1) externally.',
+      '6. CLOCK: Connect Function Generator (+) to Pin 14 (CKA) and Function Generator (−) to GND.',
+      '   Function Generator Settings: Frequency = 1 Hz, Amplitude = 5V p-p, DC Offset = 2V, Waveform = Square.',
+      '   In the simulator: Connect SW 0 to Pin 14 (CKA).',
+      '7. Connect QA (Pin 12) → LED 0, QB (Pin 9) → LED 1, QC (Pin 8) → LED 2, QD (Pin 11) → LED 3.',
+      '8. Apply clock pulses and record the BCD outputs for each clock cycle (0000 to 1001 then reset).'
+    ],
+    requiredICs: ['7490'],
+    defaultSockets: [{ socketId: 0, partNumber: '7490' }],
+    functionGenerator: {
+      pin: 14,
+      socketId: 0,
+      frequency: '1 Hz',
+      amplitude: '5V p-p',
+      dcOffset: '2V',
+      waveform: 'Square',
+      positive: 'IC_0_P14 (CKA)',
+      negative: 'GND'
+    },
+    inputs: [
+      { id: 0, label: 'CLK / CKA (Fn.Gen / SW 0)', switchIndex: 0 }
+    ],
+    outputs: [
+      { id: 0, label: 'QA (LED 0)', ledIndex: 0 },
+      { id: 1, label: 'QB (LED 1)', ledIndex: 1 },
+      { id: 2, label: 'QC (LED 2)', ledIndex: 2 },
+      { id: 3, label: 'QD (LED 3)', ledIndex: 3 }
+    ],
+    truthTable: {
+      headers: ['CLK Pulse', 'QA', 'QB', 'QC', 'QD', 'Decimal'],
+      rows: [
+        { inputs: [0], outputs: [0, 0, 0, 0] },
+        { inputs: [1], outputs: [1, 0, 0, 0] },
+        { inputs: [2], outputs: [0, 1, 0, 0] },
+        { inputs: [3], outputs: [1, 1, 0, 0] },
+        { inputs: [4], outputs: [0, 0, 1, 0] },
+        { inputs: [5], outputs: [1, 0, 1, 0] },
+        { inputs: [6], outputs: [0, 1, 1, 0] },
+        { inputs: [7], outputs: [1, 1, 1, 0] },
+        { inputs: [8], outputs: [0, 0, 0, 1] },
+        { inputs: [9], outputs: [1, 0, 0, 1] }
+      ]
+    },
+    referenceWiring: [
+      { from: 'VCC_0', to: 'IC_0_P5',  color: '#e53935' },
+      { from: 'GND_0', to: 'IC_0_P10', color: '#1e88e5' },
+      // Reset pins tied to GND (normal counting mode)
+      { from: 'GND_1', to: 'IC_0_P2',  color: '#1e88e5' },
+      { from: 'GND_2', to: 'IC_0_P3',  color: '#1e88e5' },
+      { from: 'GND_3', to: 'IC_0_P6',  color: '#1e88e5' },
+      { from: 'GND_4', to: 'IC_0_P7',  color: '#1e88e5' },
+      // QA (P12) → CKB (P1) for BCD decade counting
+      { from: 'IC_0_P12', to: 'IC_0_P1', color: '#ffa726' },
+      // Function Generator Clock: (+) -> Pin 14 (CKA), (-) -> GND
+      { from: 'FG_POS', to: 'IC_0_P14', color: '#ff7043' },
+      { from: 'FG_NEG', to: 'GND_5',    color: '#1e88e5' },
+      // Outputs to LEDs
+      { from: 'IC_0_P12', to: 'LED_0', color: '#4caf50' },
+      { from: 'IC_0_P9',  to: 'LED_1', color: '#29b6f6' },
+      { from: 'IC_0_P8',  to: 'LED_2', color: '#ab47bc' },
+      { from: 'IC_0_P11', to: 'LED_3', color: '#ffa726' }
+    ]
+  },
+
+  // ==========================================
+  // EXPERIMENT 11: Universal Shift Register (IC 7495)
+  // ==========================================
+  {
+    id: 'exp11_sipo',
+    expNum: 11,
+    subMode: 'SIPO',
+    title: 'Exp 11: Shift Register — SIPO (Serial In, Parallel Out) using IC 7495',
+    aim: 'To study the Serial-In Parallel-Out (SIPO) mode of a Universal Shift Register using IC 7495.',
+    apparatus: [
+      { name: 'IC 7495', spec: '4-Bit Right/Left Universal Shift Register', qty: 1 },
+      { name: 'Digital IC Trainer Kit', qty: 1 },
+      { name: 'Function Generator Probe', qty: 1 },
+      { name: 'Connecting Patch Cords', qty: 'As required' }
+    ],
+    theory: 'IC 7495 is a 4-bit shift register with both serial and parallel inputs and outputs.\n\nSIPO (Serial In Parallel Out) — Right Shift Mode:\n• Mode Control (Pin 6) = 0 (LOW) selects serial/right-shift mode.\n• Data is applied serially at SER input (Pin 1), and shifted right on each rising edge of CLK1 (Pin 9).\n• After 4 clock pulses, all 4 bits are available simultaneously at QA, QB, QC, QD (Pins 13, 12, 11, 10).\n\nIC 7495 Pins:\n• SER (Serial In) = Pin 1\n• Parallel Inputs A-D = Pins 2,3,4,5\n• MODE = Pin 6 (0 = serial, 1 = parallel)\n• CLK1 (Serial Clock) = Pin 9\n• CLK2 (Parallel Clock) = Pin 8\n• QA, QB, QC, QD (Outputs) = Pins 13, 12, 11, 10\n• VCC = Pin 14, GND = Pin 7',
+    procedure: [
+      '1. Insert IC 7495 into Socket 1.',
+      '2. Connect Pin 14 (VCC) to +5V and Pin 7 (GND) to GND.',
+      '3. Set Mode (Pin 6) to GND (Mode = 0: Serial Right-Shift mode).',
+      '4. Connect Switch 1 (SW 1) to Pin 1 (SER — Serial Input Data).',
+      '5. CLOCK (CLK1): Connect Function Generator (+) to Pin 9 (CLK1) and Function Generator (−) to GND.',
+      '   Function Generator Settings: Frequency = 1 Hz, Amplitude = 5V p-p, DC Offset = 2V, Waveform = Square.',
+      '   In the simulator: Connect FG_POS to Pin 9 (CLK1) and FG_NEG to GND.',
+      '6. Connect QA (Pin 13) → LED 0, QB (Pin 12) → LED 1, QC (Pin 11) → LED 2, QD (Pin 10) → LED 3.',
+      '7. Set serial data (SW 1) to desired bit value (0 or 1) and clock for each bit.',
+      '8. After 4 clock pulses, read the 4-bit data from LEDs 0–3.'
+    ],
+    requiredICs: ['7495'],
+    defaultSockets: [{ socketId: 0, partNumber: '7495' }],
+    functionGenerator: {
+      pin: 9,
+      socketId: 0,
+      frequency: '1 Hz',
+      amplitude: '5V p-p',
+      dcOffset: '2V',
+      waveform: 'Square',
+      positive: 'IC_0_P9 (CLK1)',
+      negative: 'GND'
+    },
+    inputs: [
+      { id: 0, label: 'CLK1 (Fn.Gen / SW 0)', switchIndex: 0 },
+      { id: 1, label: 'SER Data (SW 1)',       switchIndex: 1 }
+    ],
+    outputs: [
+      { id: 0, label: 'QA (LED 0)', ledIndex: 0 },
+      { id: 1, label: 'QB (LED 1)', ledIndex: 1 },
+      { id: 2, label: 'QC (LED 2)', ledIndex: 2 },
+      { id: 3, label: 'QD (LED 3)', ledIndex: 3 }
+    ],
+    truthTable: {
+      headers: ['CLK#', 'SER In', 'QA', 'QB', 'QC', 'QD'],
+      rows: [
+        { inputs: [1, 0], outputs: [0, 0, 0, 0] },
+        { inputs: [1, 1], outputs: [1, 0, 0, 0] },
+        { inputs: [1, 1], outputs: [1, 1, 0, 0] },
+        { inputs: [1, 1], outputs: [1, 1, 1, 0] }
+      ]
+    },
+    referenceWiring: [
+      { from: 'VCC', to: 'IC_0_P14', color: '#e53935' },
+      { from: 'GND', to: 'IC_0_P7',  color: '#1e88e5' },
+      // MODE = 0 (Serial mode)
+      { from: 'GND_1', to: 'IC_0_P6', color: '#1e88e5' },
+      // Function Generator Clock: (+) -> Pin 9 (CLK1), (-) -> GND
+      { from: 'FG_POS', to: 'IC_0_P9', color: '#ff7043' },
+      { from: 'FG_NEG', to: 'GND_2',   color: '#1e88e5' },
+      // SER = SW 1
+      { from: 'SW_1', to: 'IC_0_P1',  color: '#fbc02d' },
+      // Outputs
+      { from: 'IC_0_P13', to: 'LED_0', color: '#4caf50' },
+      { from: 'IC_0_P12', to: 'LED_1', color: '#29b6f6' },
+      { from: 'IC_0_P11', to: 'LED_2', color: '#ab47bc' },
+      { from: 'IC_0_P10', to: 'LED_3', color: '#ffa726' }
+    ]
+  },
+
+  {
+    id: 'exp11_siso',
+    expNum: 11,
+    subMode: 'SISO',
+    title: 'Exp 11: Shift Register — SISO (Serial In, Serial Out) using IC 7495',
+    aim: 'To study the Serial-In Serial-Out (SISO) mode of a Universal Shift Register using IC 7495.',
+    apparatus: [
+      { name: 'IC 7495', spec: '4-Bit Right/Left Universal Shift Register', qty: 1 },
+      { name: 'Digital IC Trainer Kit', qty: 1 },
+      { name: 'Function Generator Probe', qty: 1 },
+      { name: 'Connecting Patch Cords', qty: 'As required' }
+    ],
+    theory: 'SISO (Serial In Serial Out) Mode:\n• Mode Control (Pin 6) = 0 (LOW).\n• Data bits d0..d3 are entered serially on each rising edge of CLK1 (Pin 9).\n• At the end of the 4th clock pulse, the first data bit d0 appears at QD (Pin 10).\n• Successive clock pulses shift d1, d2, d3 out at QD serially.',
+    procedure: [
+      '1. Insert IC 7495 into Socket 1.',
+      '2. Connect Pin 14 (VCC) to +5V and Pin 7 (GND) to GND.',
+      '3. Connect Mode (Pin 6) to GND (Mode = 0: Serial shift mode).',
+      '4. Connect SW 1 to Pin 1 (SER).',
+      '5. Connect Function Generator (+) to Pin 9 (CLK1) and Function Generator (−) to GND.',
+      '   Function Generator Settings: Frequency = 1 Hz, Amplitude = 5V p-p, DC Offset = 2V, Waveform = Square.',
+      '6. Connect QD (Pin 10) to LED 3 (Serial Output), and QA..QC to LEDs 0..2.',
+      '7. Enter 4 bits serially, then observe data bits emerging one by one at QD.'
+    ],
+    requiredICs: ['7495'],
+    defaultSockets: [{ socketId: 0, partNumber: '7495' }],
+    functionGenerator: {
+      pin: 9,
+      socketId: 0,
+      frequency: '1 Hz',
+      amplitude: '5V p-p',
+      dcOffset: '2V',
+      waveform: 'Square',
+      positive: 'IC_0_P9 (CLK1)',
+      negative: 'GND'
+    },
+    inputs: [
+      { id: 0, label: 'CLK1 (Fn.Gen / SW 0)', switchIndex: 0 },
+      { id: 1, label: 'SER Data (SW 1)',       switchIndex: 1 }
+    ],
+    outputs: [
+      { id: 0, label: 'QA (LED 0)', ledIndex: 0 },
+      { id: 1, label: 'QB (LED 1)', ledIndex: 1 },
+      { id: 2, label: 'QC (LED 2)', ledIndex: 2 },
+      { id: 3, label: 'QD / Serial Out (LED 3)', ledIndex: 3 }
+    ],
+    truthTable: {
+      headers: ['CLK#', 'SER In', 'QA', 'QB', 'QC', 'QD (Serial Out)'],
+      rows: [
+        { inputs: [1, 0], outputs: [0, 0, 0, 0] },
+        { inputs: [1, 1], outputs: [1, 0, 0, 0] },
+        { inputs: [1, 1], outputs: [1, 1, 0, 0] },
+        { inputs: [1, 1], outputs: [1, 1, 1, 0] },  // d0=0 at QD
+        { inputs: [1, 0], outputs: [0, 1, 1, 1] },  // d1=1 at QD
+        { inputs: [1, 0], outputs: [0, 0, 1, 1] },  // d2=1 at QD
+        { inputs: [1, 0], outputs: [0, 0, 0, 1] }   // d3=1 at QD
+      ]
+    },
+    referenceWiring: [
+      { from: 'VCC', to: 'IC_0_P14', color: '#e53935' },
+      { from: 'GND', to: 'IC_0_P7',  color: '#1e88e5' },
+      // MODE = 0 (Serial mode)
+      { from: 'GND_1', to: 'IC_0_P6', color: '#1e88e5' },
+      // Function Generator Clock: (+) -> Pin 9 (CLK1), (-) -> GND
+      { from: 'FG_POS', to: 'IC_0_P9', color: '#ff7043' },
+      { from: 'FG_NEG', to: 'GND_2',   color: '#1e88e5' },
+      // SER = SW 1
+      { from: 'SW_1', to: 'IC_0_P1',  color: '#fbc02d' },
+      // Outputs
+      { from: 'IC_0_P13', to: 'LED_0', color: '#4caf50' },
+      { from: 'IC_0_P12', to: 'LED_1', color: '#29b6f6' },
+      { from: 'IC_0_P11', to: 'LED_2', color: '#ab47bc' },
+      { from: 'IC_0_P10', to: 'LED_3', color: '#ffa726' }
+    ]
+  },
+
+  {
+    id: 'exp11_piso',
+    expNum: 11,
+    subMode: 'PISO',
+    title: 'Exp 11: Shift Register — PISO (Parallel In, Serial Out) using IC 7495',
+    aim: 'To study the Parallel-In Serial-Out (PISO) mode of IC 7495.',
+    apparatus: [
+      { name: 'IC 7495', spec: '4-Bit Right/Left Universal Shift Register', qty: 1 },
+      { name: 'Digital IC Trainer Kit', qty: 1 },
+      { name: 'Function Generator Probe', qty: 1 },
+      { name: 'Connecting Patch Cords', qty: 'As required' }
+    ],
+    theory: 'PISO (Parallel In Serial Out) Mode:\n1. Load Phase: Mode = 1 (HIGH), apply CLK2 pulse. 4-bit data at A,B,C,D (Pins 2,3,4,5) is loaded in parallel into QA,QB,QC,QD simultaneously.\n2. Shift Phase: Set Mode = 0 (LOW), apply CLK1 pulses. Data shifts out serially from QD (Pin 10) one bit per clock cycle.\n\nThis allows converting a 4-bit parallel word into a serial stream.',
+    procedure: [
+      '1. Insert IC 7495 into Socket 1.',
+      '2. Connect Pin 14 (VCC) to +5V and Pin 7 (GND) to GND.',
+      '3. Connect 4-bit data: SW 2→Pin2(A), SW 3→Pin3(B), SW 4→Pin4(C), SW 5→Pin5(D).',
+      '4. LOAD: Set Mode (Pin6) = HIGH (SW 1 → Pin6). Apply CLK2 pulse.',
+      '   This loads SW 2–5 data into the register. LEDs 0–3 show loaded data.',
+      '5. SHIFT OUT: Set Mode (Pin6) = LOW (SW 1 = 0). Apply CLK1 pulses.',
+      '   Function Generator Settings: Frequency = 1 Hz, Amplitude = 5V p-p, DC Offset = 2V, Waveform = Square.',
+      '   Each CLK1 pulse shifts data right; QD (Pin10 → LED3) gives bits serially.',
+      '6. Read serial output from LED 3 (QD) on each clock pulse.'
+    ],
+    requiredICs: ['7495'],
+    defaultSockets: [{ socketId: 0, partNumber: '7495' }],
+    functionGenerator: {
+      frequency: '1 Hz',
+      amplitude: '5V p-p',
+      dcOffset: '2V',
+      waveform: 'Square',
+      positive: 'IC_0_P8 (CLK2) / IC_0_P9 (CLK1)',
+      negative: 'GND'
+    },
+    inputs: [
+      { id: 0, label: 'CLK (Fn.Gen / SW 0)', switchIndex: 0 },
+      { id: 1, label: 'MODE (SW 1)',  switchIndex: 1 },
+      { id: 2, label: 'A (SW 2)',     switchIndex: 2 },
+      { id: 3, label: 'B (SW 3)',     switchIndex: 3 },
+      { id: 4, label: 'C (SW 4)',     switchIndex: 4 },
+      { id: 5, label: 'D (SW 5)',     switchIndex: 5 }
+    ],
+    outputs: [
+      { id: 0, label: 'QA (LED 0)', ledIndex: 0 },
+      { id: 1, label: 'QB (LED 1)', ledIndex: 1 },
+      { id: 2, label: 'QC (LED 2)', ledIndex: 2 },
+      { id: 3, label: 'QD / Serial Out (LED 3)', ledIndex: 3 }
+    ],
+    truthTable: {
+      headers: ['Mode', 'A', 'B', 'C', 'D', 'QA', 'QB', 'QC', 'QD'],
+      rows: [
+        { inputs: [1, 1, 1, 0, 1, 1], outputs: [1, 0, 1, 1] },  // Load phase
+        { inputs: [1, 0, 0, 0, 0, 0], outputs: [0, 1, 0, 1] },  // Shift 1 (QD=1)
+        { inputs: [1, 0, 0, 0, 0, 0], outputs: [0, 0, 1, 0] },  // Shift 2 (QD=0)
+        { inputs: [1, 0, 0, 0, 0, 0], outputs: [0, 0, 0, 1] },  // Shift 3 (QD=1)
+        { inputs: [1, 0, 0, 0, 0, 0], outputs: [0, 0, 0, 0] }   // Shift 4
+      ]
+    },
+    referenceWiring: [
+      { from: 'VCC', to: 'IC_0_P14', color: '#e53935' },
+      { from: 'GND', to: 'IC_0_P7',  color: '#1e88e5' },
+      // MODE = SW 1
+      { from: 'SW_1', to: 'IC_0_P6',  color: '#fbc02d' },
+      // CLK → CLK2 for parallel load, CLK1 for shift
+      { from: 'FG_POS', to: 'IC_0_P8',  color: '#ff7043' },  // CLK2 (load)
+      { from: 'FG_POS', to: 'IC_0_P9',  color: '#ff7043' },  // CLK1 (shift)
+      { from: 'FG_NEG', to: 'GND_1',    color: '#1e88e5' },
+      // Parallel inputs
+      { from: 'SW_2', to: 'IC_0_P2',  color: '#43a047' },
+      { from: 'SW_3', to: 'IC_0_P3',  color: '#00acc1' },
+      { from: 'SW_4', to: 'IC_0_P4',  color: '#ab47bc' },
+      { from: 'SW_5', to: 'IC_0_P5',  color: '#fb8c00' },
+      // Outputs
+      { from: 'IC_0_P13', to: 'LED_0', color: '#4caf50' },
+      { from: 'IC_0_P12', to: 'LED_1', color: '#29b6f6' },
+      { from: 'IC_0_P11', to: 'LED_2', color: '#ab47bc' },
+      { from: 'IC_0_P10', to: 'LED_3', color: '#ffa726' }
+    ]
+  },
+
+  {
+    id: 'exp11_pipo',
+    expNum: 11,
+    subMode: 'PIPO',
+    title: 'Exp 11: Shift Register — PIPO (Parallel In, Parallel Out) using IC 7495',
+    aim: 'To study the Parallel-In Parallel-Out (PIPO) mode of IC 7495.',
+    apparatus: [
+      { name: 'IC 7495', spec: '4-Bit Right/Left Universal Shift Register', qty: 1 },
+      { name: 'Digital IC Trainer Kit', qty: 1 },
+      { name: 'Function Generator Probe', qty: 1 },
+      { name: 'Connecting Patch Cords', qty: 'As required' }
+    ],
+    theory: 'PIPO (Parallel In Parallel Out) Mode:\n• Set Mode (Pin 6) = 1 (HIGH).\n• Apply a single CLK2 (Pin 8) pulse.\n• All 4 bits at inputs A,B,C,D (Pins 2,3,4,5) are loaded simultaneously into the register.\n• All 4 output bits QA,QB,QC,QD (Pins 13,12,11,10) are available simultaneously at the outputs.\n• This is the fastest transfer method — 4 bits transferred in a single clock cycle.',
+    procedure: [
+      '1. Insert IC 7495 into Socket 1.',
+      '2. Connect Pin 14 (VCC) to +5V and Pin 7 (GND) to GND.',
+      '3. Set Mode (Pin 6) = HIGH by connecting Pin 6 to +5V (Mode = 1).',
+      '4. Connect SW 1→Pin2(A), SW 2→Pin3(B), SW 3→Pin4(C), SW 4→Pin5(D) for parallel inputs.',
+      '5. CLOCK (CLK2): Connect Function Generator (+) to Pin 8 (CLK2) and Function Generator (−) to GND.',
+      '   Function Generator Settings: Frequency = 1 Hz, Amplitude = 5V p-p, DC Offset = 2V, Waveform = Square.',
+      '   In the simulator: Connect FG_POS to Pin 8 (CLK2) and FG_NEG to GND.',
+      '6. Connect QA (Pin 13) → LED 0, QB (Pin 12) → LED 1, QC (Pin 11) → LED 2, QD (Pin 10) → LED 3.',
+      '7. Set desired 4-bit input using SW 1–4, then apply one clock pulse.',
+      '8. Observe that LEDs 0–3 immediately reflect the applied 4-bit input data.'
+    ],
+    requiredICs: ['7495'],
+    defaultSockets: [{ socketId: 0, partNumber: '7495' }],
+    functionGenerator: {
+      pin: 8,
+      socketId: 0,
+      frequency: '1 Hz',
+      amplitude: '5V p-p',
+      dcOffset: '2V',
+      waveform: 'Square',
+      positive: 'IC_0_P8 (CLK2)',
+      negative: 'GND'
+    },
+    inputs: [
+      { id: 0, label: 'CLK2 (Fn.Gen / SW 0)', switchIndex: 0 },
+      { id: 1, label: 'A (SW 1)',              switchIndex: 1 },
+      { id: 2, label: 'B (SW 2)',              switchIndex: 2 },
+      { id: 3, label: 'C (SW 3)',              switchIndex: 3 },
+      { id: 4, label: 'D (SW 4)',              switchIndex: 4 }
+    ],
+    outputs: [
+      { id: 0, label: 'QA (LED 0)', ledIndex: 0 },
+      { id: 1, label: 'QB (LED 1)', ledIndex: 1 },
+      { id: 2, label: 'QC (LED 2)', ledIndex: 2 },
+      { id: 3, label: 'QD (LED 3)', ledIndex: 3 }
+    ],
+    truthTable: {
+      headers: ['A', 'B', 'C', 'D', 'QA', 'QB', 'QC', 'QD'],
+      rows: [
+        { inputs: [1, 1, 0, 1, 1], outputs: [1, 0, 1, 1] },
+        { inputs: [1, 0, 1, 0, 0], outputs: [0, 1, 0, 0] },
+        { inputs: [1, 1, 1, 1, 0], outputs: [1, 1, 1, 0] },
+        { inputs: [1, 0, 0, 0, 1], outputs: [0, 0, 0, 1] }
+      ]
+    },
+    referenceWiring: [
+      { from: 'VCC', to: 'IC_0_P14', color: '#e53935' },
+      { from: 'GND', to: 'IC_0_P7',  color: '#1e88e5' },
+      // MODE = 1 (VCC for parallel load)
+      { from: 'VCC_1', to: 'IC_0_P6',  color: '#e53935' },
+      // CLK2 = FG_POS -> Pin 8
+      { from: 'FG_POS', to: 'IC_0_P8',  color: '#ff7043' },
+      { from: 'FG_NEG', to: 'GND_1',    color: '#1e88e5' },
+      // Parallel inputs
+      { from: 'SW_1', to: 'IC_0_P2',  color: '#43a047' },
+      { from: 'SW_2', to: 'IC_0_P3',  color: '#00acc1' },
+      { from: 'SW_3', to: 'IC_0_P4',  color: '#ab47bc' },
+      { from: 'SW_4', to: 'IC_0_P5',  color: '#fb8c00' },
+      // Outputs
+      { from: 'IC_0_P13', to: 'LED_0', color: '#4caf50' },
+      { from: 'IC_0_P12', to: 'LED_1', color: '#29b6f6' },
+      { from: 'IC_0_P11', to: 'LED_2', color: '#ab47bc' },
+      { from: 'IC_0_P10', to: 'LED_3', color: '#ffa726' }
     ]
   }
 ];

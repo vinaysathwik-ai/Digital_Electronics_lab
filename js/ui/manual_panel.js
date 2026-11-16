@@ -164,6 +164,8 @@ class ManualPanel {
       default: return this.renderTheoryProcedureTab();
     }
   }
+    }
+  }
 
   renderTheoryProcedureTab() {
     const exp = this.currentExp;
@@ -211,6 +213,21 @@ class ManualPanel {
             ${this.renderCircuitSVG(exp.id)}
           </div>
         </div>
+
+        ${exp.functionGenerator ? `
+        <div class="doc-block fg-block">
+          <h4>⚡ FUNCTION GENERATOR SETTINGS (for CLK):</h4>
+          <div class="fg-settings-card">
+            <div class="fg-row"><span class="fg-label">Frequency:</span> <span class="fg-value">${exp.functionGenerator.frequency}</span></div>
+            <div class="fg-row"><span class="fg-label">Amplitude:</span> <span class="fg-value">${exp.functionGenerator.amplitude}</span></div>
+            <div class="fg-row"><span class="fg-label">DC Offset:</span> <span class="fg-value">${exp.functionGenerator.dcOffset}</span></div>
+            <div class="fg-row"><span class="fg-label">Waveform:</span> <span class="fg-value">${exp.functionGenerator.waveform}</span></div>
+            <div class="fg-row"><span class="fg-label">Fn.Gen (+) →</span> <span class="fg-value fg-clk">${exp.functionGenerator.positive}</span></div>
+            <div class="fg-row"><span class="fg-label">Fn.Gen (−) →</span> <span class="fg-value fg-gnd">GND (Ground Rail)</span></div>
+            <div class="alert-box alert-fg">In the simulator, SW 0 acts as the clock — toggle it to simulate one clock pulse at a time.</div>
+          </div>
+        </div>
+        ` : ''}
 
         <div class="doc-block procedure-block">
           <h4>PROCEDURE:</h4>
@@ -488,6 +505,242 @@ class ManualPanel {
             <text x="175" y="117" fill="#38bdf8" font-size="12" font-weight="bold">7408 (AND)</text>
             <line x1="240" y1="112" x2="330" y2="112" stroke="#fb923c" stroke-width="2.5" />
             <text x="340" y="117" fill="#fb923c" font-size="12">CARRY (C)</text>
+          </svg>
+        `;
+      case 'exp6_magnitude_comparator':
+        return `
+          <svg viewBox="0 0 540 180" class="schematic-svg">
+            <text x="20" y="30" fill="#ffd54f" font-size="10">A3..A0 (SW3..0)</text>
+            <line x1="110" y1="25" x2="180" y2="25" stroke="#ffd54f" stroke-width="2"/>
+            <text x="20" y="55" fill="#4ade80" font-size="10">B3..B0 (SW7..4)</text>
+            <line x1="110" y1="50" x2="180" y2="50" stroke="#4ade80" stroke-width="2"/>
+            <text x="20" y="80" fill="#888" font-size="9">Cascading Inputs:</text>
+            <text x="20" y="95" fill="#888" font-size="9">A=B_in(P3)→VCC</text>
+            <text x="20" y="110" fill="#888" font-size="9">A&gt;B_in(P4), A&lt;B_in(P2)→GND</text>
+            <rect x="180" y="15" width="160" height="130" rx="6" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+            <text x="210" y="50" fill="#38bdf8" font-size="13" font-weight="bold">IC 7485</text>
+            <text x="195" y="70" fill="#888" font-size="10">4-Bit Comparator</text>
+            <text x="195" y="90" fill="#888" font-size="8">VCC=Pin16, GND=Pin8</text>
+            <!-- Outputs -->
+            <line x1="340" y1="45" x2="420" y2="45" stroke="#4ade80" stroke-width="2.5"/>
+            <text x="425" y="49" fill="#4ade80" font-size="10">A&gt;B (Pin 5) → LED 0</text>
+            <line x1="340" y1="75" x2="420" y2="75" stroke="#38bdf8" stroke-width="2.5"/>
+            <text x="425" y="79" fill="#38bdf8" font-size="10">A=B (Pin 6) → LED 1</text>
+            <line x1="340" y1="105" x2="420" y2="105" stroke="#f06292" stroke-width="2.5"/>
+            <text x="425" y="109" fill="#f06292" font-size="10">A&lt;B (Pin 7) → LED 2</text>
+            <text x="180" y="165" fill="#888" font-size="9">Compares 4-bit unsigned A vs B</text>
+          </svg>
+        `;
+      case 'exp7_rs_ff':
+        return `
+          <svg viewBox="0 0 500 180" class="schematic-svg">
+            <text x="20" y="30" fill="#e0e0e0" font-size="11">S' (SW0)</text>
+            <line x1="80" y1="25" x2="150" y2="25" stroke="#ffd54f" stroke-width="2"/>
+            <rect x="150" y="10" width="90" height="40" rx="5" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+            <text x="168" y="35" fill="#38bdf8" font-size="12" font-weight="bold">NAND G1</text>
+            <line x1="240" y1="30" x2="320" y2="30" stroke="#4ade80" stroke-width="2.5"/>
+            <text x="325" y="34" fill="#4ade80" font-size="11">Q → LED0</text>
+            <text x="20" y="80" fill="#e0e0e0" font-size="11">R' (SW1)</text>
+            <line x1="80" y1="75" x2="150" y2="75" stroke="#fb923c" stroke-width="2"/>
+            <rect x="150" y="60" width="90" height="40" rx="5" fill="#1e293b" stroke="#f06292" stroke-width="2"/>
+            <text x="168" y="85" fill="#f06292" font-size="12" font-weight="bold">NAND G2</text>
+            <line x1="240" y1="80" x2="320" y2="80" stroke="#fb923c" stroke-width="2.5"/>
+            <text x="325" y="84" fill="#fb923c" font-size="11">Q' → LED1</text>
+            <!-- Cross-couple arrows -->
+            <path d="M 320 30 L 360 30 L 360 110 L 150 110 L 150 90" stroke="#ab47bc" stroke-width="1.5" fill="none" stroke-dasharray="4,3"/>
+            <path d="M 320 80 L 350 80 L 350 130 L 150 130 L 150 40" stroke="#00acc1" stroke-width="1.5" fill="none" stroke-dasharray="4,3"/>
+            <text x="150" y="155" fill="#888" font-size="10">Cross-coupled NAND latch (SR Flip-Flop)</text>
+          </svg>
+        `;
+      case 'exp7_d_ff':
+        return `
+          <svg viewBox="0 0 500 150" class="schematic-svg">
+            <text x="20" y="45" fill="#ff7043" font-size="11">CLK → Pin 3 (SW0 / Fn.Gen)</text>
+            <line x1="150" y1="40" x2="200" y2="40" stroke="#ff7043" stroke-width="2.5"/>
+            <text x="20" y="80" fill="#ffd54f" font-size="11">D → Pin 2 (SW1)</text>
+            <line x1="150" y1="75" x2="200" y2="75" stroke="#ffd54f" stroke-width="2.5"/>
+            <rect x="200" y="20" width="110" height="80" rx="6" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+            <text x="225" y="58" fill="#38bdf8" font-size="13" font-weight="bold">D FF (7474)</text>
+            <text x="208" y="38" fill="#ff7043" font-size="9">CLK</text>
+            <text x="208" y="72" fill="#ffd54f" font-size="9">D</text>
+            <line x1="310" y1="45" x2="390" y2="45" stroke="#4ade80" stroke-width="2.5"/>
+            <text x="395" y="50" fill="#4ade80" font-size="11">Q → LED0</text>
+            <line x1="310" y1="75" x2="390" y2="75" stroke="#ab47bc" stroke-width="2.5"/>
+            <text x="395" y="80" fill="#ab47bc" font-size="11">Q' → LED1</text>
+            <text x="150" y="130" fill="#888" font-size="10">PRE (Pin4) and CLR (Pin1) both tied to Vcc (inactive)</text>
+          </svg>
+        `;
+      case 'exp7_jk_ff':
+      case 'exp7_t_ff':
+        return `
+          <svg viewBox="0 0 500 170" class="schematic-svg">
+            <text x="20" y="40" fill="#ff7043" font-size="11">CLK → Pin1 (SW0 / Fn.Gen)</text>
+            <line x1="150" y1="35" x2="200" y2="35" stroke="#ff7043" stroke-width="2.5"/>
+            <text x="20" y="75" fill="#ffd54f" font-size="11">J → Pin4 (SW1)</text>
+            <line x1="150" y1="70" x2="200" y2="70" stroke="#ffd54f" stroke-width="2.5"/>
+            <text x="20" y="110" fill="#43a047" font-size="11">K → Pin8 (SW2${this.currentExp && this.currentExp.id === 'exp7_t_ff' ? ' → Vcc)' : ')'}</text>
+            <line x1="150" y1="105" x2="200" y2="105" stroke="#43a047" stroke-width="2.5"/>
+            <rect x="200" y="15" width="115" height="105" rx="6" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+            <text x="222" y="68" fill="#38bdf8" font-size="13" font-weight="bold">JK FF (7476)</text>
+            <line x1="315" y1="45" x2="390" y2="45" stroke="#4ade80" stroke-width="2.5"/>
+            <text x="395" y="50" fill="#4ade80" font-size="11">Q → LED0</text>
+            <line x1="315" y1="85" x2="390" y2="85" stroke="#ab47bc" stroke-width="2.5"/>
+            <text x="395" y="90" fill="#ab47bc" font-size="11">Q' → LED1</text>
+            <text x="130" y="150" fill="#888" font-size="10">VCC=Pin5, GND=Pin13. PRE(Pin2) and CLR(Pin3) tied to Vcc.</text>
+          </svg>
+        `;
+      case 'exp8_ring_counter':
+        return `
+          <svg viewBox="0 0 540 160" class="schematic-svg">
+            <text x="10" y="25" fill="#ff7043" font-size="10">CLK (SW0)</text>
+            <line x1="55" y1="20" x2="80" y2="20" stroke="#ff7043" stroke-width="2"/>
+            <line x1="55" y1="20" x2="55" y2="140" stroke="#ff7043" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <rect x="80"  y="10" width="80" height="40" rx="5" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+            <text x="92"  y="35" fill="#38bdf8" font-size="11">D-FF0</text>
+            <rect x="210" y="10" width="80" height="40" rx="5" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+            <text x="222" y="35" fill="#38bdf8" font-size="11">D-FF1</text>
+            <rect x="340" y="10" width="80" height="40" rx="5" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+            <text x="352" y="35" fill="#38bdf8" font-size="11">D-FF2</text>
+            <!-- Q connections -->
+            <line x1="160" y1="30" x2="210" y2="30" stroke="#4ade80" stroke-width="2"/>
+            <line x1="290" y1="30" x2="340" y2="30" stroke="#4ade80" stroke-width="2"/>
+            <!-- Output LEDs -->
+            <line x1="160" y1="30" x2="160" y2="80" stroke="#4ade80" stroke-width="1.5"/>
+            <text x="150" y="95" fill="#4ade80" font-size="10">LED0</text>
+            <line x1="290" y1="30" x2="290" y2="80" stroke="#4ade80" stroke-width="1.5"/>
+            <text x="280" y="95" fill="#4ade80" font-size="10">LED1</text>
+            <line x1="420" y1="30" x2="420" y2="80" stroke="#4ade80" stroke-width="1.5"/>
+            <text x="410" y="95" fill="#4ade80" font-size="10">LED2</text>
+            <!-- Ring feedback arrow -->
+            <path d="M 420 30 L 470 30 L 470 130 L 60 130 L 60 30 L 80 30" stroke="#f06292" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+            <text x="210" y="145" fill="#f06292" font-size="10">Ring feedback: Q2 → D0</text>
+          </svg>
+        `;
+      case 'exp8_johnson_counter':
+        return `
+          <svg viewBox="0 0 540 170" class="schematic-svg">
+            <text x="10" y="25" fill="#ff7043" font-size="10">CLK</text>
+            <line x1="55" y1="20" x2="80" y2="20" stroke="#ff7043" stroke-width="2"/>
+            <rect x="80"  y="10" width="80" height="40" rx="5" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+            <text x="92"  y="35" fill="#38bdf8" font-size="11">D-FF0</text>
+            <rect x="210" y="10" width="80" height="40" rx="5" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+            <text x="222" y="35" fill="#38bdf8" font-size="11">D-FF1</text>
+            <rect x="340" y="10" width="80" height="40" rx="5" fill="#1e293b" stroke="#f06292" stroke-width="2"/>
+            <text x="352" y="35" fill="#f06292" font-size="11">D-FF2</text>
+            <line x1="160" y1="30" x2="210" y2="30" stroke="#4ade80" stroke-width="2"/>
+            <line x1="290" y1="30" x2="340" y2="30" stroke="#4ade80" stroke-width="2"/>
+            <line x1="160" y1="30" x2="160" y2="80" stroke="#4ade80" stroke-width="1.5"/>
+            <text x="150" y="95" fill="#4ade80" font-size="10">LED0</text>
+            <line x1="290" y1="30" x2="290" y2="80" stroke="#4ade80" stroke-width="1.5"/>
+            <text x="280" y="95" fill="#4ade80" font-size="10">LED1</text>
+            <line x1="420" y1="30" x2="420" y2="80" stroke="#f06292" stroke-width="1.5"/>
+            <text x="406" y="95" fill="#f06292" font-size="10">Q2' (inv)</text>
+            <!-- Johnson twist: Q' feeds back -->
+            <text x="340" y="58" fill="#f06292" font-size="8">Q2'=Pin6</text>
+            <path d="M 420 50 L 470 50 L 470 140 L 60 140 L 60 30 L 80 30" stroke="#f06292" stroke-width="2" fill="none" stroke-dasharray="5,3"/>
+            <text x="170" y="158" fill="#f06292" font-size="10">TWIST: Q2' (complement) → D0 (Johnson counter)</text>
+          </svg>
+        `;
+      case 'exp9_sync_counter':
+        return `
+          <svg viewBox="0 0 540 170" class="schematic-svg">
+            <text x="10" y="20" fill="#ff7043" font-size="10">CLK (1Hz)</text>
+            <line x1="60" y1="15" x2="60" y2="150" stroke="#ff7043" stroke-width="1.5" stroke-dasharray="3,3"/>
+            <rect x="80"  y="10" width="85" height="45" rx="5" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+            <text x="92"  y="27" fill="#38bdf8" font-size="10">JK-FF A</text>
+            <text x="92"  y="42" fill="#888" font-size="9">J=K=Vcc</text>
+            <rect x="220" y="10" width="85" height="45" rx="5" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+            <text x="232" y="27" fill="#38bdf8" font-size="10">JK-FF B</text>
+            <text x="232" y="42" fill="#888" font-size="9">J=K=QA</text>
+            <rect x="360" y="10" width="85" height="45" rx="5" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+            <text x="372" y="27" fill="#38bdf8" font-size="10">JK-FF C</text>
+            <text x="372" y="42" fill="#888" font-size="9">J=K=QA·QB</text>
+            <!-- AND gate -->
+            <rect x="260" y="90" width="60" height="30" rx="4" fill="#1e293b" stroke="#fbc02d" stroke-width="2"/>
+            <text x="272" y="110" fill="#fbc02d" font-size="10">AND</text>
+            <!-- QA→B, QA,QB→AND→C -->
+            <line x1="165" y1="30" x2="220" y2="30" stroke="#4ade80" stroke-width="2"/>
+            <line x1="165" y1="30" x2="165" y2="100" stroke="#4ade80" stroke-width="1.5"/>
+            <line x1="165" y1="100" x2="260" y2="100" stroke="#4ade80" stroke-width="1.5"/>
+            <line x1="305" y1="30" x2="360" y2="30" stroke="#29b6f6" stroke-width="2"/>
+            <line x1="305" y1="30" x2="305" y2="115" stroke="#29b6f6" stroke-width="1.5"/>
+            <line x1="305" y1="115" x2="320" y2="115" stroke="#29b6f6" stroke-width="1.5"/>
+            <line x1="320" y1="115" x2="260" y2="115" stroke="#29b6f6" stroke-width="1.5"/>
+            <line x1="320" y1="105" x2="360" y2="40" stroke="#ab47bc" stroke-width="1.5"/>
+            <!-- Output LEDs -->
+            <line x1="165" y1="30" x2="165" y2="150" stroke="#4ade80" stroke-width="1.5"/>
+            <text x="155" y="162" fill="#4ade80" font-size="9">QA=LED0</text>
+            <text x="285" y="162" fill="#29b6f6" font-size="9">QB=LED1</text>
+            <text x="415" y="162" fill="#ffa726" font-size="9">QC=LED2</text>
+          </svg>
+        `;
+      case 'exp10_decade_counter':
+        return `
+          <svg viewBox="0 0 500 160" class="schematic-svg">
+            <text x="20" y="30" fill="#ff7043" font-size="11">CLK → CKA Pin14 (SW0 / Fn.Gen)</text>
+            <line x1="200" y1="25" x2="240" y2="25" stroke="#ff7043" stroke-width="2.5"/>
+            <rect x="240" y="10" width="140" height="110" rx="6" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+            <text x="285" y="40" fill="#38bdf8" font-size="13" font-weight="bold">IC 7490</text>
+            <text x="250" y="58" fill="#888" font-size="9">CKA=Pin14 | CKB=Pin1</text>
+            <text x="250" y="72" fill="#888" font-size="9">QA=12, QB=9, QC=8, QD=11</text>
+            <text x="250" y="86" fill="#888" font-size="9">VCC=Pin5, GND=Pin10</text>
+            <text x="250" y="100" fill="#888" font-size="9">QA→CKB (BCD connection)</text>
+            <!-- Outputs -->
+            <line x1="380" y1="55" x2="440" y2="55" stroke="#4ade80" stroke-width="2"/>
+            <text x="445" y="59" fill="#4ade80" font-size="10">QA→LED0</text>
+            <line x1="380" y1="75" x2="440" y2="75" stroke="#29b6f6" stroke-width="2"/>
+            <text x="445" y="79" fill="#29b6f6" font-size="10">QB→LED1</text>
+            <line x1="380" y1="93" x2="440" y2="93" stroke="#ab47bc" stroke-width="2"/>
+            <text x="445" y="97" fill="#ab47bc" font-size="10">QC→LED2</text>
+            <line x1="380" y1="111" x2="440" y2="111" stroke="#ffa726" stroke-width="2"/>
+            <text x="445" y="115" fill="#ffa726" font-size="10">QD→LED3</text>
+            <text x="20" y="145" fill="#888" font-size="10">Fn.Gen: 1Hz, 5Vp-p, DC Offset=2V, Square. R0 and R9 → GND.</text>
+          </svg>
+        `;
+      case 'exp11_sipo':
+        return `
+          <svg viewBox="0 0 500 160" class="schematic-svg">
+            <text x="20" y="25" fill="#ff7043" font-size="10">CLK1 → Pin8 (SW0)</text>
+            <line x1="130" y1="20" x2="180" y2="20" stroke="#ff7043" stroke-width="2"/>
+            <text x="20" y="50" fill="#ffd54f" font-size="10">SER → Pin1 (SW1)</text>
+            <line x1="130" y1="45" x2="180" y2="45" stroke="#ffd54f" stroke-width="2"/>
+            <text x="20" y="75" fill="#888" font-size="10">MODE=0 → GND (Serial)</text>
+            <line x1="130" y1="70" x2="180" y2="70" stroke="#888" stroke-width="1.5"/>
+            <rect x="180" y="10" width="120" height="100" rx="6" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+            <text x="210" y="55" fill="#38bdf8" font-size="13" font-weight="bold">IC 7495</text>
+            <text x="195" y="72" fill="#888" font-size="8">SIPO Mode (Mode=0)</text>
+            <line x1="300" y1="30" x2="370" y2="30" stroke="#4ade80" stroke-width="2"/>
+            <text x="375" y="34" fill="#4ade80" font-size="10">QA→LED0</text>
+            <line x1="300" y1="50" x2="370" y2="50" stroke="#29b6f6" stroke-width="2"/>
+            <text x="375" y="54" fill="#29b6f6" font-size="10">QB→LED1</text>
+            <line x1="300" y1="70" x2="370" y2="70" stroke="#ab47bc" stroke-width="2"/>
+            <text x="375" y="74" fill="#ab47bc" font-size="10">QC→LED2</text>
+            <line x1="300" y1="90" x2="370" y2="90" stroke="#ffa726" stroke-width="2"/>
+            <text x="375" y="94" fill="#ffa726" font-size="10">QD→LED3</text>
+            <text x="20" y="140" fill="#888" font-size="9">Serial data shifts right on each CLK1 pulse. After 4 pulses, all bits visible at QA-QD.</text>
+          </svg>
+        `;
+      case 'exp11_piso':
+      case 'exp11_pipo':
+        return `
+          <svg viewBox="0 0 500 160" class="schematic-svg">
+            <text x="20" y="20" fill="#ff7043" font-size="10">CLK(SW0)→Pin${this.currentExp && this.currentExp.id === 'exp11_pipo' ? '9(CLK2)' : '8/9'}</text>
+            <text x="20" y="38" fill="#ffd54f" font-size="10">MODE(SW1)→Pin6 (1=Parallel)</text>
+            <text x="20" y="55" fill="#43a047" font-size="10">A(SW2)→P2, B(SW3)→P3, C(SW4)→P4, D(SW5)→P5</text>
+            <line x1="175" y1="20" x2="210" y2="20" stroke="#ff7043" stroke-width="2"/>
+            <line x1="175" y1="38" x2="210" y2="38" stroke="#ffd54f" stroke-width="2"/>
+            <line x1="175" y1="55" x2="210" y2="55" stroke="#43a047" stroke-width="2"/>
+            <rect x="210" y="10" width="120" height="100" rx="6" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+            <text x="235" y="55" fill="#38bdf8" font-size="13" font-weight="bold">IC 7495</text>
+            <text x="215" y="72" fill="#888" font-size="8">${this.currentExp && this.currentExp.id === 'exp11_pipo' ? 'PIPO Mode (Mode=1)' : 'PISO Mode'}</text>
+            <line x1="330" y1="30" x2="400" y2="30" stroke="#4ade80" stroke-width="2"/>
+            <text x="405" y="34" fill="#4ade80" font-size="10">QA→LED0</text>
+            <line x1="330" y1="50" x2="400" y2="50" stroke="#29b6f6" stroke-width="2"/>
+            <text x="405" y="54" fill="#29b6f6" font-size="10">QB→LED1</text>
+            <line x1="330" y1="70" x2="400" y2="70" stroke="#ab47bc" stroke-width="2"/>
+            <text x="405" y="74" fill="#ab47bc" font-size="10">QC→LED2</text>
+            <line x1="330" y1="90" x2="400" y2="90" stroke="#ffa726" stroke-width="2"/>
+            <text x="405" y="94" fill="#ffa726" font-size="10">QD→LED3</text>
           </svg>
         `;
       default:

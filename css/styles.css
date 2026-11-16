@@ -517,9 +517,15 @@ body.trainer-theme-light, body {
    ========================================================================== */
 .trainer-main-deck {
   display: grid;
-  grid-template-columns: 190px 1fr 190px;
+  grid-template-columns: 215px 1fr 190px;
   gap: 1.25rem;
   min-height: 480px;
+}
+
+.deck-left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .deck-section {
@@ -670,6 +676,220 @@ body.trainer-theme-light, body {
 .jack-caption {
   font-family: var(--font-mono);
   font-size: 0.55rem;
+  color: #64748b;
+}
+
+/* ==========================================================================
+   Function Generator / TTL Clock Source
+   ========================================================================== */
+.func-gen-section {
+  background: linear-gradient(180deg, #ffffff 0%, #f0fdfa 100%);
+  border: 2px solid #5eead4;
+  border-radius: 10px;
+  padding: 0.7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  box-shadow: inset 0 0 12px rgba(94, 234, 212, 0.2), 0 2px 6px rgba(13, 148, 136, 0.12);
+  transition: opacity 0.2s ease, border-color 0.2s ease;
+}
+
+.func-gen-section.inactive {
+  opacity: 0.75;
+  border-color: #99f6e4;
+}
+
+.fg-status-pill {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  background: #e2e8f0;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.fg-status-pill.active {
+  background: #dcfce7;
+  color: #15803d;
+  box-shadow: 0 0 6px rgba(34, 197, 94, 0.3);
+}
+
+/* Digital LCD Display */
+.fg-lcd-screen {
+  background: #0f172a;
+  border: 2px solid #334155;
+  border-radius: 6px;
+  padding: 0.45rem 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+.fg-lcd-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.fg-lcd-item {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: #38bdf8;
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.fg-lcd-item .lcd-lbl {
+  color: #94a3b8;
+  font-size: 0.55rem;
+}
+
+.fg-lcd-item strong {
+  color: #34d399;
+  font-weight: 700;
+  text-shadow: 0 0 4px rgba(52, 211, 153, 0.5);
+}
+
+/* Controls: Pulse & Run Buttons */
+.fg-controls-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.fg-ctrl-btn {
+  flex: 1;
+  padding: 0.4rem 0.5rem;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.btn-fg-pulse {
+  background: linear-gradient(180deg, #fef08a 0%, #facc15 100%);
+  border: 1.5px solid #eab308;
+  color: #713f12;
+  box-shadow: 0 2px 4px rgba(202, 138, 4, 0.2);
+}
+
+.btn-fg-pulse:hover {
+  background: linear-gradient(180deg, #fef9c3 0%, #fde047 100%);
+  transform: translateY(-1px);
+}
+
+.btn-fg-pulse:active {
+  transform: translateY(1px);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.btn-fg-run {
+  background: linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 100%);
+  border: 1.5px solid #cbd5e1;
+  color: #334155;
+}
+
+.btn-fg-run.running {
+  background: linear-gradient(180deg, #fee2e2 0%, #fca5a5 100%);
+  border-color: #ef4444;
+  color: #991b1b;
+}
+
+.run-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #94a3b8;
+  display: inline-block;
+  transition: background 0.15s ease;
+}
+
+.run-dot.active {
+  background: #ef4444;
+  box-shadow: 0 0 6px #ef4444;
+  animation: pulse-dot 1s infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+/* Terminals Bay: (+) Jack, Live LED, (−) Jack */
+.fg-terminals-bay {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 0.45rem 0.2rem;
+}
+
+.fg-term-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.fg-term-caption {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #334155;
+}
+
+.fg-clock-indicator-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.fg-clk-led {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #475569;
+  border: 2px solid #334155;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.6);
+  transition: all 0.12s ease;
+}
+
+.fg-clk-led.lit-high {
+  background: radial-gradient(circle at 35% 35%, #86efac 0%, #22c55e 60%, #15803d 100%);
+  border-color: #16a34a;
+  box-shadow: 0 0 10px #22c55e, 0 0 16px rgba(34, 197, 94, 0.6);
+}
+
+.fg-clk-led.lit-low {
+  background: #334155;
+  border-color: #1e293b;
+}
+
+.fg-clk-val {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.fg-clk-val.high {
+  color: #16a34a;
+}
+
+.fg-clk-val.low {
   color: #64748b;
 }
 
@@ -1360,6 +1580,54 @@ body.sidebar-collapsed .floating-sidebar-tab {
   background: #fffbeb;
   border: 1px solid #fde047;
   color: #92400e;
+}
+
+/* Function Generator Settings Block */
+.fg-block h4 {
+  color: #ff7043;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+}
+.fg-settings-card {
+  background: #0f1a28;
+  border: 1.5px solid #ff7043;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-top: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.fg-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+}
+.fg-label {
+  color: #94a3b8;
+  min-width: 110px;
+  font-family: var(--font-tech);
+}
+.fg-value {
+  color: #fbbf24;
+  font-weight: 600;
+  font-family: var(--font-tech);
+}
+.fg-clk {
+  color: #ff7043;
+}
+.fg-gnd {
+  color: #60a5fa;
+}
+.alert-fg {
+  background: rgba(255,112,67,0.08);
+  border: 1px solid rgba(255,112,67,0.4);
+  color: #ffd180;
+  border-radius: 5px;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.75rem;
+  margin-top: 0.3rem;
 }
 
 /* Schematic Canvas */

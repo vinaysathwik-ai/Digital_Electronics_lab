@@ -137,7 +137,9 @@ class TrainerApp {
       }
     }
 
+    this.boardView.stopClockAutoRun();
     this.boardView.renderSockets();
+    this.boardView.updateFuncGenExperiment(exp);
     this.manualPanel.setExperiment(exp);
     this.handleCircuitStateChange();
     this.showToast(`Loaded ${exp.title}`);
@@ -196,7 +198,7 @@ class TrainerApp {
     for (const cat of categories) {
       const header = document.createElement('h4');
       header.className = 'ic-cat-title';
-      header.textContent = cat === 'Gates' ? 'Basic Logic Gates (74xx)' : 'MSI Functional ICs (MUX, Decoder, Encoder, Comparator)';
+      header.textContent = cat === 'Gates' ? 'Basic Logic Gates (74xx)' : 'MSI & Sequential ICs (MUX, Decoder, Flip-Flops, Counters, Shift Registers)';
       grid.appendChild(header);
 
       const catGrid = document.createElement('div');
@@ -327,6 +329,8 @@ class TrainerApp {
 
     // Reset board: works directly on click
     document.getElementById('btn-reset-board').addEventListener('click', () => {
+      this.boardView.stopClockAutoRun();
+      this.engine.setClock(0);
       this.wireManager.setSelectedWire(null);
       this.engine.clearWires();
       for (let s = 0; s < this.engine.sockets.length; s++) {

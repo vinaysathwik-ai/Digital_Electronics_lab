@@ -21,6 +21,8 @@ class TopologyVerifier {
     const allNodes = new Set();
     allNodes.add('VCC');
     allNodes.add('GND');
+    allNodes.add('FG_POS');
+    allNodes.add('FG_NEG');
 
     for (let i = 0; i < 8; i++) {
       allNodes.add(`VCC_${i}`);
@@ -127,11 +129,15 @@ class TopologyVerifier {
       const swName = `SW_${inpDef.switchIndex}`;
       const targetPins = [];
       let isPassThrough = false;
+      const isClockRole = inpDef.isClock || /CLK|Clock/i.test(inpDef.label);
 
       for (const w of refWires) {
-        if (w.from === swName && w.to.startsWith('IC_')) targetPins.push(w.to);
-        else if (w.to === swName && w.from.startsWith('IC_')) targetPins.push(w.from);
-        else if ((w.from === swName && w.to.startsWith('LED_')) || (w.to === swName && w.from.startsWith('LED_'))) {
+        const matchFrom = (w.from === swName) || (isClockRole && w.from === 'FG_POS');
+        const matchTo = (w.to === swName) || (isClockRole && w.to === 'FG_POS');
+
+        if (matchFrom && w.to.startsWith('IC_')) targetPins.push(w.to);
+        else if (matchTo && w.from.startsWith('IC_')) targetPins.push(w.from);
+        else if ((matchFrom && w.to.startsWith('LED_')) || (matchTo && w.from.startsWith('LED_'))) {
           isPassThrough = true;
         }
       }
@@ -192,7 +198,9 @@ class TopologyVerifier {
       const isPowerA = w.from.startsWith('VCC') || w.from.startsWith('GND');
       const isPowerB = w.to.startsWith('VCC') || w.to.startsWith('GND');
 
-      if (isPowerA && w.to.startsWith('IC_')) {
+      if ((w.from === 'FG_NEG' && w.to.startsWith('GND')) || (w.to === 'FG_NEG' && w.from.startsWith('GND'))) {
+        staticWiring.push({ pin: 'FG_NEG', rail: 'GND' });
+      } else if (isPowerA && w.to.startsWith('IC_')) {
         const rail = w.from.startsWith('VCC') ? 'VCC' : 'GND';
         if (!this.isStandardPowerPin(w.to, exp)) {
           staticWiring.push({ pin: w.to, rail });
@@ -850,19 +858,30 @@ class TopologyVerifier {
         debug.push(`Input ${inDef.role} (${firstPin}) connects directly to LED(s): ${ledsInNet.join(', ')}.`);
       }
 
-      // Discover connected switches
+      // Discover connected switches or Function Generator
       const switchesInNet = [...inNet].filter(n => n.startsWith('SW_'));
-      if (switchesInNet.length === 0) {
+      const hasFG = inNet.has('FG_POS');
+
+      if (switchesInNet.length === 0 && !hasFG) {
         errors.push(`Input "${inDef.role}" is not connected to any control switch.`);
-        debug.push(`Input ${inDef.role} (${firstPin}) has no switch.`);
+        debug.push(`Input ${inDef.role} (${firstPin}) has no switch or clock source.`);
       } else if (switchesInNet.length > 1) {
         errors.push(`Multiple control switches are shorted together on input "${inDef.role}".`);
         debug.push(`Input ${inDef.role} has multiple switches shorted: ${switchesInNet.join(', ')}.`);
+      } else if (hasFG && switchesInNet.length === 0) {
+        discoveredInputs[inDef.role] = 'FG_POS';
+        inputSwitches[inDef.index] = 'FG_POS';
+        inputNets[inDef.role] = inNet;
       } else {
         const swName = switchesInNet[0];
         discoveredInputs[inDef.role] = swName;
         inputSwitches[inDef.index] = parseInt(swName.replace('SW_', ''), 10);
         inputNets[inDef.role] = inNet;
+      }
+
+      if (hasFG && !areConnected('FG_NEG', 'GND')) {
+        errors.push(`Function Generator negative terminal (−) must be connected to GND rail as per lab manual.`);
+        debug.push(`FG_NEG is not connected to GND.`);
       }
     }
 
@@ -911,10 +930,10 @@ class TopologyVerifier {
       for (const pin of inDef.pins || []) {
         const translatedPin = translate(pin);
         const pinNet = getNet(translatedPin);
-        const hasSwitch = [...pinNet].some(n => n.startsWith('SW_'));
-        if (!hasSwitch && !errors.some(e => e.includes(inDef.role))) {
+        const hasDriver = [...pinNet].some(n => n.startsWith('SW_')) || pinNet.has('FG_POS');
+        if (!hasDriver && !errors.some(e => e.includes(inDef.role))) {
           errors.push(`Input "${inDef.role}" is missing a required switch connection to the IC.`);
-          debug.push(`IC pin ${translatedPin} for input ${inDef.role} has no switch.`);
+          debug.push(`IC pin ${translatedPin} for input ${inDef.role} has no switch or clock source.`);
         }
       }
     }

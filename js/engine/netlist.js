@@ -4,11 +4,15 @@
  * floating input detection, short-circuit protection, and iterative logic propagation.
  */
 
-let IC_DEFS = typeof IC_DEFINITIONS !== 'undefined' ? IC_DEFINITIONS : null;
+let IC_DEFS = (typeof IC_DEFINITIONS !== 'undefined') ? IC_DEFINITIONS : null;
 if (!IC_DEFS && typeof require !== 'undefined') {
   try {
     IC_DEFS = require('../ics/ic_definitions.js').IC_DEFINITIONS;
-  } catch (e) {}
+  } catch (e) {
+    try {
+      IC_DEFS = require('./js/ics/ic_definitions.js').IC_DEFINITIONS;
+    } catch (e2) {}
+  }
 }
 
 class NetlistEngine {
@@ -21,6 +25,7 @@ class NetlistEngine {
       { id: 3, ic: null, label: 'SOCKET 4 (IC 4)' }
     ];
     this.switches = [0, 0, 0, 0, 0, 0, 0, 0]; // 8 DIP switches (0=LOW, 1=HIGH)
+    this.fgValue = 0; // Function Generator TTL output level (0=LOW, 1=HIGH)
     this.wireIdCounter = 1;
     this.listeners = [];
   }
@@ -117,10 +122,32 @@ class NetlistEngine {
     return 0;
   }
 
+  setClock(val) {
+    this.fgValue = val ? 1 : 0;
+    this.notify();
+    return this.fgValue;
+  }
+
+  toggleClock() {
+    this.fgValue = this.fgValue ? 0 : 1;
+    this.notify();
+    return this.fgValue;
+  }
+
+  pulseClock(cb) {
+    this.fgValue = 1;
+    this.notify();
+    setTimeout(() => {
+      this.fgValue = 0;
+      this.notify();
+      if (typeof cb === 'function') cb();
+    }, 150);
+  }
+
   /**
    * Run simulation pass
    */
-  simulate() {
+  simulate(simOptions = {}) {
     const errors = [];
     const warnings = [];
 
@@ -128,6 +155,8 @@ class NetlistEngine {
     const allNodes = new Set();
     allNodes.add('VCC');
     allNodes.add('GND');
+    allNodes.add('FG_POS');
+    allNodes.add('FG_NEG');
     for (let i = 0; i < 8; i++) {
       allNodes.add(`VCC_${i}`);
       allNodes.add(`GND_${i}`);
@@ -231,7 +260,22 @@ class NetlistEngine {
     let stabilized = false;
 
     // Initialize IC outputs
-    const icOutputs = {};
+    const icOutputs = { ...(this.lastIcOutputs || {}) };
+    for (let s = 0; s < this.sockets.length; s++) {
+      const sock = this.sockets[s];
+      if (!sock.ic || !icStatus[s] || !icStatus[s].powered) continue;
+      const def = sock.ic.def;
+      if (def && def.evaluate && sock.state) {
+        try {
+          const preOuts = def.evaluate({}, sock.state, { pass: 1, prePass: true });
+          for (const [outPin, outVal] of Object.entries(preOuts || {})) {
+            if (outVal === 1 || outVal === 0) {
+              icOutputs[`IC_${s}_P${outPin}`] = outVal;
+            }
+          }
+        } catch (e) {}
+      }
+    }
 
     for (let pass = 0; pass < MAX_PASSES; pass++) {
       let changed = false;
@@ -246,6 +290,14 @@ class NetlistEngine {
 
         if (!netDrivers.has(gndRoot)) netDrivers.set(gndRoot, []);
         netDrivers.get(gndRoot).push({ source: 'GND', value: 0 });
+      }
+
+      // Function Generator driver (FG_POS is active when FG_NEG is grounded)
+      const fgNegRoot = find('FG_NEG');
+      const fgPosRoot = find('FG_POS');
+      if (fgNegRoot === gndRoot && fgPosRoot !== gndRoot) {
+        if (!netDrivers.has(fgPosRoot)) netDrivers.set(fgPosRoot, []);
+        netDrivers.get(fgPosRoot).push({ source: 'FG_POS', value: (this.fgValue ? 1 : 0) });
       }
 
       // Switches
@@ -319,6 +371,18 @@ class NetlistEngine {
             let gateOut = 'Z';
             if (inValues.every(v => v !== undefined && v !== 'SHORT')) {
               gateOut = gate.eval(...inValues);
+            } else {
+              // Partial evaluation for dominant gate inputs
+              const part = def.partNumber;
+              if (part === '7400' || part === '7410') {
+                if (inValues.some(v => v === 0)) gateOut = 1;
+              } else if (part === '7402') {
+                if (inValues.some(v => v === 1)) gateOut = 0;
+              } else if (part === '7408' || part === '7411') {
+                if (inValues.some(v => v === 0)) gateOut = 0;
+              } else if (part === '7432') {
+                if (inValues.some(v => v === 1)) gateOut = 1;
+              }
             }
             if (icOutputs[outNode] !== gateOut) {
               icOutputs[outNode] = gateOut;
@@ -326,7 +390,7 @@ class NetlistEngine {
             }
           }
         } else if (def.evaluate) {
-          // MSI IC (74153, 74139, 74138, 74148, 7485)
+          // MSI IC (74153, 74139, 74138, 74148, 7485, 7474, 7476, 7490, 7495)
           const pinVals = {};
           for (let p = 1; p <= def.pinCount; p++) {
             const pDef = def.pins[p];
@@ -342,7 +406,8 @@ class NetlistEngine {
             }
           }
 
-          const evaluatedOutputs = def.evaluate(pinVals);
+          sock.state = sock.state || {};
+          const evaluatedOutputs = def.evaluate(pinVals, sock.state, { pass, engine: this, socketId: s, ...simOptions });
           for (const [outPin, outVal] of Object.entries(evaluatedOutputs)) {
             const outNode = `IC_${s}_P${outPin}`;
             if (icOutputs[outNode] !== outVal) {
@@ -382,6 +447,8 @@ class NetlistEngine {
       ledRawStates[i] = val !== undefined ? val : 'Z';
       ledOutputs[i] = (val === 1) ? 1 : 0;
     }
+
+    this.lastIcOutputs = { ...icOutputs };
 
     return {
       errors,

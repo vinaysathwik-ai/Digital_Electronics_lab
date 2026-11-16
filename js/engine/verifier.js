@@ -158,18 +158,30 @@ class LabVerifier {
         let currentMappingPassed = true;
         const currentRowResults = [];
 
+        // Initialize socket internal state before testing mapping candidate
+        for (let s = 0; s < this.engine.sockets.length; s++) {
+          this.engine.sockets[s].state = (experiment.initialState && experiment.initialState[s])
+            ? { ...experiment.initialState[s] }
+            : {};
+        }
+
         for (let r = 0; r < rows.length; r++) {
           const row = rows[r];
 
-          // Apply inputs to discovered physical switches
+          // Apply inputs to discovered physical switches or Function Generator
           for (let inIdx = 0; inIdx < experiment.inputs.length; inIdx++) {
             const swIdx = mapping.inputSwitches[inIdx];
-            const val = row.inputs[inIdx];
-            this.engine.switches[swIdx] = val;
+            const rawVal = row.inputs[inIdx];
+            const bitVal = (rawVal === 0) ? 0 : 1;
+            if (swIdx === 'FG_POS') {
+              this.engine.fgValue = bitVal;
+            } else if (typeof swIdx === 'number') {
+              this.engine.switches[swIdx] = bitVal;
+            }
           }
 
-          // Run simulation
-          const sim = this.engine.simulate();
+          // Run simulation with current row step
+          const sim = this.engine.simulate({ rowIdx: r, experiment });
 
           // Read actual outputs from discovered physical LEDs
           const actualOutputs = [];

@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
-<body class="trainer-theme-light sidebar-collapsed">
+<body class="trainer-theme-light">
   <!-- Top App Navigation / Status Bar -->
   <nav class="app-top-nav">
     <div class="nav-brand-section">
@@ -114,7 +114,23 @@
   <!-- Notification Toast -->
   <div class="toast-notification" id="app-toast"></div>
 
-  <!-- Scripts -->
+  <!-- Global error catcher — shows any JS errors visibly on screen -->
+  <script>
+    window.onerror = function(msg, src, line, col, err) {
+      var div = document.createElement('div');
+      div.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#dc2626;color:#fff;padding:10px 16px;font:13px/1.5 monospace;z-index:9999;white-space:pre-wrap;cursor:pointer;';
+      div.textContent = '\u26A0 JS ERROR: ' + msg + '\n  at ' + src + ':' + line + ':' + col;
+      div.title = 'Click to dismiss';
+      div.onclick = function() { div.remove(); };
+      document.body.appendChild(div);
+      return false;
+    };
+    window.addEventListener('unhandledrejection', function(e) {
+      window.onerror(e.reason && e.reason.message ? e.reason.message : String(e.reason), 'promise', 0, 0, e.reason);
+    });
+  </script>
+
+  <!-- Scripts (load order matters: dependencies before dependents) -->
   <script src="js/ics/ic_definitions.js"></script>
   <script src="js/engine/netlist.js"></script>
   <script src="js/experiments/experiments.js"></script>

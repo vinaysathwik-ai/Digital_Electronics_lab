@@ -516,6 +516,7 @@ class ManualPanel {
             <text x="340" y="117" fill="#fb923c" font-size="12">CARRY (C)</text>
           </svg>
         `;
+      case 'exp6_comparator':
       case 'exp6_magnitude_comparator':
         return `
           <svg viewBox="0 0 540 180" class="schematic-svg">

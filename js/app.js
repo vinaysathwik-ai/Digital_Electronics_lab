@@ -9,6 +9,7 @@ class TrainerApp {
     this.engine = new NetlistEngine();
     this.currentExp = EXPERIMENTS[0];
     this.targetSocketForPicker = null;
+    this.lastReport = null;
 
     this.initDOM();
     this.loadExperiment(this.currentExp);
@@ -47,7 +48,7 @@ class TrainerApp {
       this.handleCircuitStateChange();
     });
 
-    // Window resize & orientation change handler for wire rendering
+    // Window resize, orientation change & board viewport scroll handler for wire rendering
     window.addEventListener('resize', () => {
       this.wireManager.render();
     });
@@ -56,10 +57,21 @@ class TrainerApp {
         this.wireManager.render();
       }, 250);
     });
+    if (boardContainer) {
+      boardContainer.addEventListener('scroll', () => {
+        this.wireManager.render();
+      }, { passive: true });
+    }
 
     this.setupToolbarEvents();
     this.setupModalEvents();
     this.setupSidebarToggle();
+
+    // Set initial active state of sidebar toggle button based on body class
+    const btnNav = document.getElementById('btn-toggle-manual');
+    if (btnNav) {
+      btnNav.classList.toggle('active', !document.body.classList.contains('sidebar-collapsed'));
+    }
   }
 
   showToast(message) {
@@ -171,7 +183,7 @@ class TrainerApp {
     this.wireManager.render();
 
     // Update Live Truth table active row highlight if on truthtable tab
-    if (this.manualPanel.activeTab === 'truthtable') {
+    if (this.manualPanel && this.manualPanel.activeTab === 'truthtable') {
       const activeTabContent = document.getElementById('manual-tab-content');
       if (activeTabContent) {
         activeTabContent.innerHTML = this.manualPanel.renderTabContent();
@@ -192,6 +204,7 @@ class TrainerApp {
     this.targetSocketForPicker = socketId;
     const modal = document.getElementById('ic-picker-modal');
     const grid = document.getElementById('ic-picker-grid');
+    if (!modal || !grid) return;
     grid.innerHTML = '';
 
     const categories = ['Gates', 'MSI'];
@@ -231,19 +244,20 @@ class TrainerApp {
 
   closeICPicker() {
     const modal = document.getElementById('ic-picker-modal');
-    modal.classList.remove('visible');
+    if (modal) modal.classList.remove('visible');
     this.targetSocketForPicker = null;
   }
 
   openVerificationModal(report) {
     const modal = document.getElementById('verification-modal');
     const body = document.getElementById('verification-modal-body');
+    if (!modal || !body) return;
 
     body.innerHTML = `
       <div class="report-header ${report.passed ? 'pass-banner' : 'fail-banner'}">
         <div class="banner-icon">${report.passed ? 'PASS' : 'FAIL'}</div>
         <div class="banner-text">
-          <h3>${report.passed ? 'EXPERIMENT VERIFIED & APPROVED' : 'VERIFICATION INCOMPLETE'}</h3>
+          <h3>${report.passed ? 'EXPERIMENT VERIFIED &amp; APPROVED' : 'VERIFICATION INCOMPLETE'}</h3>
           <span>${report.experimentTitle}</span>
         </div>
         <div class="report-timestamp">${report.timestamp}</div>
@@ -251,7 +265,7 @@ class TrainerApp {
 
       <!-- Instructor Checks -->
       <div class="report-section">
-        <h4>1. Lab Instructor Safety & Rule Checklist</h4>
+        <h4>1. Lab Instructor Safety &amp; Rule Checklist</h4>
         <div class="checklist-items">
           ${report.structuralChecks.map(c => `
             <div class="check-row ${c.status === 'PASSED' ? 'row-pass' : 'row-fail'}">
@@ -300,21 +314,27 @@ class TrainerApp {
 
   closeVerificationModal() {
     const modal = document.getElementById('verification-modal');
-    modal.classList.remove('visible');
+    if (modal) modal.classList.remove('visible');
   }
 
   setupToolbarEvents() {
-    // Clear wires: works directly on click without blocking popups!
-    document.getElementById('btn-clear-wires').addEventListener('click', () => {
-      this.wireManager.setSelectedWire(null);
-      this.engine.clearWires();
-      this.handleCircuitStateChange();
-      this.wireManager.render();
-      this.showToast('All patch cords cleared.');
-    });
+    // ---- Defensive helper ----
+    const $btn = (id) => document.getElementById(id);
+
+    // Clear wires
+    const btnClear = $btn('btn-clear-wires');
+    if (btnClear) {
+      btnClear.addEventListener('click', () => {
+        this.wireManager.setSelectedWire(null);
+        this.engine.clearWires();
+        this.handleCircuitStateChange();
+        this.wireManager.render();
+        this.showToast('All patch cords cleared.');
+      });
+    }
 
     // Remove single selected wire
-    const btnRemoveWire = document.getElementById('btn-remove-wire');
+    const btnRemoveWire = $btn('btn-remove-wire');
     if (btnRemoveWire) {
       btnRemoveWire.addEventListener('click', () => {
         if (this.wireManager.selectedWireId) {
@@ -327,32 +347,35 @@ class TrainerApp {
       });
     }
 
-    // Reset board: works directly on click
-    document.getElementById('btn-reset-board').addEventListener('click', () => {
-      this.boardView.stopClockAutoRun();
-      this.engine.setClock(0);
-      this.wireManager.setSelectedWire(null);
-      this.engine.clearWires();
-      for (let s = 0; s < this.engine.sockets.length; s++) {
-        this.engine.removeIC(s);
-      }
-      for (let i = 0; i < 8; i++) {
-        this.engine.setSwitch(i, 0);
-      }
-      this.boardView.renderSockets();
-      this.boardView.renderSwitches();
-      this.handleCircuitStateChange();
-      this.wireManager.render();
-      this.showToast('Trainer kit reset: ICs ejected, switches reset, wires cleared.');
-    });
+    // Reset board
+    const btnReset = $btn('btn-reset-board');
+    if (btnReset) {
+      btnReset.addEventListener('click', () => {
+        this.boardView.stopClockAutoRun();
+        this.engine.setClock(0);
+        this.wireManager.setSelectedWire(null);
+        this.engine.clearWires();
+        for (let s = 0; s < this.engine.sockets.length; s++) {
+          this.engine.removeIC(s);
+        }
+        for (let i = 0; i < 8; i++) {
+          this.engine.setSwitch(i, 0);
+        }
+        this.boardView.renderSockets();
+        this.boardView.renderSwitches();
+        this.handleCircuitStateChange();
+        this.wireManager.render();
+        this.showToast('Trainer kit reset: ICs ejected, switches reset, wires cleared.');
+      });
+    }
 
     // Master Power toggle
-    const btnPwr = document.getElementById('btn-master-power');
+    const btnPwr = $btn('btn-master-power');
     if (btnPwr) {
       btnPwr.addEventListener('click', () => {
         btnPwr.classList.toggle('active');
         const isActive = btnPwr.classList.contains('active');
-        const vDisplay = document.getElementById('voltage-display');
+        const vDisplay = $btn('voltage-display');
         if (vDisplay) {
           vDisplay.textContent = isActive ? '5.02 V' : '0.00 V';
         }
@@ -361,33 +384,61 @@ class TrainerApp {
   }
 
   setupModalEvents() {
+    const $btn = (id) => document.getElementById(id);
+
     // Close IC picker
-    document.getElementById('btn-close-ic-picker').addEventListener('click', () => {
-      this.closeICPicker();
-    });
+    const btnCloseIC = $btn('btn-close-ic-picker');
+    if (btnCloseIC) {
+      btnCloseIC.addEventListener('click', () => {
+        this.closeICPicker();
+      });
+    }
 
     // Close verification modal
-    document.getElementById('btn-close-verification').addEventListener('click', () => {
-      this.closeVerificationModal();
-    });
+    const btnCloseVerify = $btn('btn-close-verification');
+    if (btnCloseVerify) {
+      btnCloseVerify.addEventListener('click', () => {
+        this.closeVerificationModal();
+      });
+    }
 
-    // Lab Guide modal
-    const btnGuide = document.getElementById('btn-open-guide');
-    const guideModal = document.getElementById('lab-guide-modal');
-    const btnCloseGuide = document.getElementById('btn-close-guide');
+    // Lab Guide modal open/close
+    const btnGuide = $btn('btn-open-guide');
+    const guideModal = $btn('lab-guide-modal');
+    const btnCloseGuide = $btn('btn-close-guide');
 
-    if (btnGuide && guideModal && btnCloseGuide) {
+    if (btnGuide && guideModal) {
       btnGuide.addEventListener('click', () => {
         guideModal.classList.add('visible');
       });
+    }
+    if (btnCloseGuide && guideModal) {
       btnCloseGuide.addEventListener('click', () => {
         guideModal.classList.remove('visible');
       });
     }
+
+    // Close modals on backdrop click
+    document.querySelectorAll('.app-modal-backdrop').forEach(backdrop => {
+      backdrop.addEventListener('click', (e) => {
+        if (e.target === backdrop) {
+          backdrop.classList.remove('visible');
+        }
+      });
+    });
   }
 }
 
-// Global bootstrap
+// Global bootstrap — wrap in try/catch so errors are visible
 window.addEventListener('DOMContentLoaded', () => {
-  window.app = new TrainerApp();
+  try {
+    window.app = new TrainerApp();
+  } catch (err) {
+    console.error('TrainerApp boot error:', err);
+    // Show a visible error banner so the user/developer can see it
+    const errBanner = document.createElement('div');
+    errBanner.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#dc2626;color:#fff;padding:12px 20px;font-family:monospace;font-size:13px;z-index:9999;white-space:pre-wrap;';
+    errBanner.textContent = '⚠ App Boot Error: ' + err.message + '\n' + (err.stack || '');
+    document.body.appendChild(errBanner);
+  }
 });

@@ -518,7 +518,7 @@ body.trainer-theme-light, body {
    ========================================================================== */
 .trainer-main-deck {
   display: grid;
-  grid-template-columns: 215px 1fr 215px;
+  grid-template-columns: 220px 1fr 190px;
   gap: 0.65rem;
   min-height: 400px;
 }
@@ -533,7 +533,7 @@ body.trainer-theme-light, body {
   background: rgba(255, 255, 255, 0.7);
   border: 2px solid #8fc7c8;
   border-radius: 10px;
-  padding: 0.85rem;
+  padding: 0.6rem 0.55rem;
   display: flex;
   flex-direction: column;
   box-shadow: inset 0 0 16px rgba(255, 255, 255, 0.8), 0 2px 6px rgba(59, 142, 144, 0.15);
@@ -544,8 +544,8 @@ body.trainer-theme-light, body {
   flex-direction: column;
   align-items: center;
   border-bottom: 2px solid #8fc7c8;
-  padding-bottom: 0.5rem;
-  margin-bottom: 0.75rem;
+  padding-bottom: 0.3rem;
+  margin-bottom: 0.45rem;
   text-align: center;
 }
 
@@ -903,41 +903,44 @@ body.trainer-theme-light, body {
    8 Logic Output Indicators / LEDs (Right Section)
    ========================================================================== */
 .led-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  flex: 1;
 }
 
 .led-card {
   background: #ffffff;
   border: 1.5px solid #b1e5e6;
-  border-radius: 6px;
-  padding: 0.25rem 0.35rem;
+  border-radius: 5px;
+  padding: 0.12rem 0.4rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   box-shadow: 0 1px 3px rgba(59, 142, 144, 0.12);
-  gap: 0.25rem;
 }
 
 .led-header {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.15rem;
+  gap: 0.05rem;
+  min-width: 48px;
 }
 
 .led-name {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
   color: #1e293b;
+  line-height: 1.1;
 }
 
 .led-state-val {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: 700;
+  line-height: 1.1;
 }
 .led-state-val.high { color: #F29191; font-weight: 800; }
 .led-state-val.low { color: #94a3b8; }
@@ -952,20 +955,20 @@ body.trainer-theme-light, body {
 }
 
 .led-bezel {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: radial-gradient(circle, #e2e8f0 40%, #cbd5e1 80%, #94a3b8 100%);
   border: 1.5px solid #94a3b8;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: inset 0 1px 3px rgba(255,255,255,0.7), 0 1px 3px rgba(0,0,0,0.15);
+  box-shadow: inset 0 1px 2px rgba(255,255,255,0.7), 0 1px 2px rgba(0,0,0,0.15);
 }
 
 .led-dome {
-  width: 15px;
-  height: 15px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   position: relative;
   transition: all 0.15s ease-out;
